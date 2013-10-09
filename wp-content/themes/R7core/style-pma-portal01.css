@@ -1,0 +1,286 @@
+/* Custom CSS Setup for Pods setup of Portal System for Rhino7*/
+
+/* Core Classes */
+.pods {
+
+}
+
+.pod-pma, .pod-pro-martial-arts {
+    background-color: #016890;
+}
+
+/* For Wildcard Page Templates */
+.pod-page-pma-broker-w-w {}
+
+.pod-page-pma-broker-w {}
+
+.pod-page-pma-broker {}
+
+.pod-page-pma-w-w {}
+
+.pod-page-pma-w {}
+
+.pod-page-pma {}
+
+.pod-page-pro-martial-arts-broker-w-w {}
+
+.pod-page-pro-martial-arts-broker-w {}
+
+.pod-page-pro-martial-arts-broker {}
+
+.pod-page-pro-martial-arts-w-w {}
+
+.pod-page-pro-martial-arts-w {}
+
+.pod-page-pro-martial-arts {}
+
+/* Overrides - Will replace existing CSS entities from core style.css file */
+
+body { font-size: 16px; }
+
+.sidebar {
+
+}
+
+.container {
+    /*background-color: #fff;*/
+}
+
+.page-title {
+    background-color: #016890;
+    padding: 10px;
+    text-align: center;
+    font-size: 32px; /* 1.5em */
+    font-weight: bold;
+    color: #fff;
+}
+
+.site-header {
+    margin-top:46px;
+}
+
+.site-branding {
+    display:inline-block;
+    margin-top: 30px;
+    text-align:center;
+}
+
+.site-navigation-inner {
+    /*display: none;*/
+}
+.site-header-inner {
+    height: 148px;
+}
+
+/* Other - new CSS entities specific to template, not found in core style.css file */
+
+.pma-header, .pma-content, .pma-nav {
+    background-color: #fff;
+}
+
+.pma-footer {
+    background-color:#D2F2FF;
+    min-height: 190px;
+}
+
+.pma-footer-box {
+    font-size:14px;
+    color:#666;
+    line-height:1.1;
+    margin:15px;
+    display:inline-block;
+    height: 120px;
+    vertical-align:top;
+}
+
+/*container for header navigation*/
+.head-menu {
+    position: absolute;
+    z-index: 1000;
+    right: 30px;
+    top: 50px;
+}
+
+/*container for side navigation*/
+.side-menu {
+    position: relative;
+    z-index: 1000;
+
+}
+
+/* CUSTOM PORTAL MENU CSS - Header Menu */
+/* LEVEL ONE */
+ul { list-style-type: none; }
+ul.dropdown { position: relative; }
+ul.dropdown li { margin-top:-1px; zoom: 1; background: #fff; }
+ul.dropdown li a { display: block; padding: 4px 8px; border: 1px solid #666; color:#000; }
+ul.dropdown a:hover { color:#fff; }
+ul.dropdown a:active { color:#f00; }
+ul.dropdown li.hover { background:#000; color:#fff; position: relative; }
+ul.dropdown li:hover { background:#000; color:#fff; position: relative; }
+ul.dropdown li.hover a { color:#fff; }
+/* LEVEL TWO */
+ul.dropdown ul { width: 220px; visibility: hidden; position: absolute; right: 100%; top: 0; }
+ul.dropdown ul li { margin-top:-1px; background:#666; border: 1px solid #000; color:#000; float: none; }
+ul.dropdown ul li a { width: 100%; display: inline-block; color:#000; }
+ul.dropdown ul li.hover { background:#000; color:#fff; position: relative; }
+/* LEVEL THREE */
+ul.dropdown ul ul { left: 100%; top: 0; }
+ul.dropdown li:hover > ul { visibility: visible; }
+
+/* CUSTOM PORTAL MENU CSS - Sidebar Menu */
+/* LEVEL ONE */
+ul { list-style-type: none; }
+ul.ddside { position: relative; }
+ul.ddside li { margin-top:-1px; zoom: 1; background: #fff; }
+ul.ddside li a { display: block; padding: 14px 18px; border: 1px solid #999; color:#000; }
+ul.ddside a:hover { color:#fff; }
+ul.ddside a:active { color:#f00; }
+ul.ddside li.hover { background:#000; color:#fff; position: relative; }
+ul.ddside li:hover { background:#000; color:#fff; position: relative; }
+ul.ddside li.hover a { color:#fff; }
+/* LEVEL TWO */
+ul.ddside ul { width: 320px; visibility: hidden; position: absolute; left: 80%; top: 0; }
+ul.ddside ul li { margin-top:-1px; background:#666; border: 1px solid #000; color:#fff; float: none; }
+ul.ddside ul li a { width: 100%; display: inline-block; color:#000; }
+ul.ddside ul li.hover { background:#000; color:#fff; position: relative; }
+/* LEVEL THREE */
+ul.ddside ul ul { left: 100%; top: 0; }
+ul.ddside li:hover > ul { visibility: visible; }
+
+
+.menu-pro_m_a-container {}
+
+#menu-pro_m_a {} /*assigned to the UL who's class is "menu" */
+
+.content-area {
+    margin: 0px 50px;
+}
+
+.portal-nav {
+    display: inline-block;
+    text-align: right;
+    margin: 30px 0px 0px 0px;
+}
+
+.portal-ban {
+    display: inline-block;
+    height: auto;
+    max-width: 100%;
+}
+
+#topbar {
+    background-color: #A0A2A5;
+    min-height: 38px;
+    padding: 0px 20px;
+
+}
+
+/*Media Query Overrides
+
+@media (min-width: 768px) {
+    .portal-nav { display:none; }
+}
+
+@media (min-width: 992px) {
+    .portal-nav {
+        display: inline-block;
+        text-align: center;
+        float: right;
+        margin: 30px 0px 0px 0px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .portal-nav {
+        display: inline-block;
+        text-align: center;
+        float: right;
+        margin: 30px 0px 0px 0px;
+    }
+}
+*/
+
+/*Bootstrap Overrides*/
+#myCarousel {
+
+}
+
+.carousel {
+    line-height: 1;
+    margin-bottom: 20px;
+    position: relative;
+}
+.carousel-inner {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+.carousel-inner > .item {
+    display: none;
+    position: relative;
+    transition: left 0.6s ease-in-out 0s;
+}
+.carousel-inner > .item > img, .carousel-inner > .item > a > img {
+    display: block;
+    line-height: 1;
+}
+.carousel-inner > .active, .carousel-inner > .next, .carousel-inner > .prev {
+    display: block;
+}
+.carousel-inner > .active {
+    left: 0;
+}
+.carousel-inner > .next, .carousel-inner > .prev {
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+.carousel-inner > .next {
+    left: 100%;
+}
+.carousel-inner > .prev {
+    left: -100%;
+}
+.carousel-inner > .next.left, .carousel-inner > .prev.right {
+    left: 0;
+}
+.carousel-inner > .active.left {
+    left: -100%;
+}
+.carousel-inner > .active.right {
+    left: 100%;
+}
+.carousel-control {
+    background: none repeat scroll 0 0 #222222;
+    border: 3px solid #FFFFFF;
+    border-radius: 23px 23px 23px 23px;
+    color: #FFFFFF;
+    font-size: 40px;
+    font-weight: 100;
+    height: 40px;
+    left: 15px;
+    line-height: 30px;
+    margin-top: -20px;
+    opacity: 0.5;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    width: 40px;
+}
+.carousel-control.right {
+    background-color:#000;
+    left: auto;
+    right: 15px;
+}
+.carousel-control.left {
+    background-color:#000;
+}
+.carousel-control:hover, .carousel-control:focus {
+    color: #FFFFFF;
+    opacity: 0.9;
+    text-decoration: none;
+}
+.open > .dropdown-menu {
+    display: block;
+}
