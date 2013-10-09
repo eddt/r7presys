@@ -10,7 +10,8 @@
  * Other changes:
  * - REMOVED PHP $header_image Logic from PORTAL template
  * - REPURPOSED ".site-branding" DIV to hold Franchise Logo for template (removed title & description)
- *
+ * - Menu: pma-broker
+ * - Base URI: pma-broker
  */
 ?>
 <!DOCTYPE html>
@@ -21,126 +22,147 @@
     <title><?php wp_title( '|', true, 'right' ); ?></title>
     <link rel="profile" href="http://gmpg.org/xfn/11">
     <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
-
     <?php wp_head(); ?>
     <?php echo '<link media="all" type="text/css" href="'. get_template_directory_uri() .'/style-pma-portal01.css" rel="stylesheet">'; ?>
 </head>
-
 <body <?php body_class(); ?>>
 <?php do_action( 'before' ); ?>
-
 <header id="masthead" class="site-header" role="banner">
     <div id="topbar" class="container">
-        <p>A Rhino7 Franchise Portal</p>
+        <span style="float:left; font-size:16px; font-weight:bold; color:#fff; margin-top:8px;">A <span style="color:#000; font-style:italic;">Rhino7</span> Franchise Portal</span>
+        <span style="float:right; font-size:16px; font-weight:bold; color:#fff; margin-top:8px;">919.589.9999 | <a href="mailto:pmainfo@r7fdc.com" style="color:#fff;">Email</a></span>
     </div>
-    <div class="container">
+    <div class="container pma-header">
 
         <div class="row">
-            <div class="site-header-inner col-12">
-                <div class="site-branding">
-                    <?php echo '<img src="'. get_template_directory_uri() .'/presentations/pma/pma_tp1_grfx_logo_sm.png" >' ;?>
-                </div>
-                <div class="portal-nav">
-                    This is the Portal Nav Box
-                </div>
+            <div class="site-branding col-6 col-lg-4">
+                <?php echo '<img src="'. get_template_directory_uri() .'/presentations/pma/pma_tp1_grfx_logo_sm.png" >' ;?>
             </div>
+            <?php if ( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'pma-broker') : ?>
+                <div class="portal-nav col-6 col-lg-8">
+                    <button class="btn head-menu-button" type="button" style="padding-right:30px;">
+                        Menu
+                    </button>
+                    <?php wp_nav_menu( array('menu' => 'pma-broker',
+                        'container'       => 'div',
+                        'container_class' => 'head-menu hidden',
+                        'menu_class'      => 'dropdown',
+                        'depth' => 2
+                    ) ); ?>
+                    <script>
+                        jQuery('.head-menu-button').click(function() {
+                            jQuery('.head-menu').toggleClass('hidden');
+                        });
+
+                        jQuery(function(){
+                            jQuery("ul.dropdown li").hover(function(){
+                                jQuery(this).addClass("hover");
+                                jQuery('ul:first',this).css('visibility', 'visible');
+                            }, function(){
+                                jQuery(this).removeClass("hover");
+                                jQuery('ul:first',this).css('visibility', 'hidden');
+                            });
+                            jQuery("ul.dropdown li ul li:has(ul)").find("a:first").append(" &raquo; ");
+                        });
+                    </script>
+
+                </div>
+            <?php else : ?>
+                <div class="site-branding col-12 col-lg-8">
+                    <?php echo '<img src="'. get_template_directory_uri() .'/presentations/pma/pma_tp1_grfx_sub_head_img1.png" >' ;?>
+                </div>
+            <?php endif; ?>
         </div>
     </div><!-- .container -->
 </header><!-- #masthead -->
 
 <?php if( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'pma-broker') : ?>
-<nav class="site-navigation">
-    <div class="container">
-        <div class="row">
-            <div class="site-navigation-inner col-12">
-                <div class="navbar">
-                    <!-- .navbar-toggle is used as the toggle for collapsed navbar content -->
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
+    <nav class="site-navigation">
+        <div class="container pma-nav">
+            <div class="row" style="display:none;">
+                <div class="site-navigation-inner col-12">
+                    <div class="navbar">
+                        <!-- .navbar-toggle is used as the toggle for collapsed navbar content -->
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
 
-                    <!-- Your site title as branding in the menu -->
-                    <a class="navbar-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a>
+                        <!-- The WordPress Menu goes here -->
+                        <?php wp_nav_menu(
+                            array(
+                                'theme_location' => 'primary',
+                                'container_class' => 'nav-collapse collapse navbar-responsive-collapse',
+                                'menu_class' => 'nav navbar-nav',
+                                'fallback_cb' => '',
+                                'menu_id' => 'main-menu',
+                                'walker' => new wp_bootstrap_navwalker()
+                            )
+                        ); ?>
 
-                    <!-- The WordPress Menu goes here -->
-                    <?php wp_nav_menu(
-                        array(
-                            'theme_location' => 'primary',
-                            'container_class' => 'nav-collapse collapse navbar-responsive-collapse',
-                            'menu_class' => 'nav navbar-nav',
-                            'fallback_cb' => '',
-                            'menu_id' => 'main-menu',
-                            'walker' => new wp_bootstrap_navwalker()
-                        )
-                    ); ?>
-
-                </div><!-- .navbar -->
+                    </div><!-- .navbar -->
+                </div>
             </div>
-        </div>
-    </div><!-- .container -->
-</nav><!-- .site-navigation -->
+
+            <div class="carousel slide" id="myCarousel"><!-- BEGIN Slideshow Carousel -->
+                <div class="carousel-inner">
+                    <div class="item">
+                        <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/pma/pma_tp1_grfx_slide01.png">
+                    </div>
+                    <div class="item active">
+                        <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/pma/pma_tp1_grfx_slide02.png">
+                    </div>
+                    <div class="item">
+                        <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/pma/pma_tp1_grfx_slide03.png">
+                    </div>
+                </div>
+                <a data-slide="prev" href="#myCarousel" class="left carousel-control">‹</a>
+                <a data-slide="next" href="#myCarousel" class="right carousel-control">›</a>
+            </div>
+            <script>
+                jQuery('.carousel').carousel({ interval: 7000 });
+            </script><!-- Slideshow Carousel -->
+
+        </div><!-- .container -->
+    </nav><!-- .site-navigation -->
 <?php endif; ?>
 
 <div class="main-content">
-    <div class="container">
+    <div class="container pma-content">
         <div class="row">
 
             <div class="sidebar col-12 col-lg-4">
-                <?php //if( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) != 'pma-broker') : ?>
-                    <?php wp_nav_menu( array('menu' => 'pma-broker' )); ?>
-                <?php //endif; ?>
-
-                <?php // add the class "panel" below here to wrap the sidebar in Bootstrap style ;) ?>
-                <!--<div class="sidebar-padder">
-
-                    <?php do_action( 'before_sidebar' ); ?>
-                    <?php if ( ! dynamic_sidebar( 'sidebar-1' ) ) : ?>
-
-                        <aside id="search" class="widget widget_search">
-                            <?php get_search_form(); ?>
-                        </aside>
-
-                        <aside id="archives" class="widget widget_archive">
-                            <h3 class="widget-title"><?php _e( 'Archives', 'R7core' ); ?></h3>
-                            <ul>
-                                <?php wp_get_archives( array( 'type' => 'monthly' ) ); ?>
-                            </ul>
-                        </aside>
-
-                        <aside id="meta" class="widget widget_meta">
-                            <h3 class="widget-title"><?php _e( 'Meta', 'R7core' ); ?></h3>
-                            <ul>
-                                <?php wp_register(); ?>
-                                <li><?php wp_loginout(); ?></li>
-                                <?php wp_meta(); ?>
-                            </ul>
-                        </aside>
-
-                    <?php endif; ?>
-
-                </div>--><!-- close .sidebar-padder -->
-
+                <?php if( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) != 'pma-broker') : ?>
+                    <?php wp_nav_menu( array('menu' => 'pma-broker',
+                        'container'       => 'div',
+                        'container_class' => 'side-menu',
+                        'menu_class'      => 'ddside',
+                        'depth' => 2
+                    ) ); ?>
+                    <script>
+                        jQuery(function(){
+                            jQuery("ul.ddside li").hover(function(){
+                                jQuery(this).addClass("hover");
+                                jQuery('ul:first',this).css('visibility', 'visible');
+                            }, function(){
+                                jQuery(this).removeClass("hover");
+                                jQuery('ul:first',this).css('visibility', 'hidden');
+                            });
+                        });
+                    </script>
+                <?php else : ?>
+                    <?php echo '<img src="'. get_template_directory_uri() .'/presentations/pma/pma_tp1_grfx_home_sb_img1.png" >' ;?>
+                <?php endif; ?>
             </div><!-- close .sidebar -->
 
             <div class="main-content-inner col-12 col-lg-8">
 
                 <div id="primary" class="content-area">
                     <div id="content" class="site-content" role="main">
-
                         <?php pods_content(); ?>
-
-                        <?php /* The loop */ ?>
-                        <?php //while ( have_posts() ) : the_post(); ?>
-                            <?php //get_template_part( 'content', get_post_format() ); ?>
-                            <?php //comments_template(); ?>
-                        <?php //endwhile; ?>
-
                     </div><!-- #content -->
                 </div><!-- #primary -->
-
-                <?php //get_sidebar(); ?>
 
             </div><!-- close .*-inner (main-content or sidebar, depending if sidebar is used) -->
         </div><!-- close .row -->
@@ -148,23 +170,38 @@
 </div><!-- close .main-content -->
 
 <footer id="colophon" class="site-footer" role="contentinfo">
-    <div class="container">
+    <div class="container pma-footer">
         <div class="row">
             <div class="site-footer-inner col-12">
 
                 <div class="site-info">
-                    <?php do_action( 'R7core_credits' ); ?>
-                    <a href="http://wordpress.org/" title="<?php esc_attr_e( 'A Semantic Personal Publishing Platform', 'R7core' ); ?>" rel="generator"><?php printf( __( 'Proudly powered by %s', 'R7core' ), 'WordPress' ); ?></a>
-                    <span class="sep"> | </span>
-                    <?php printf( __( 'Theme: %1$s by %2$s.', 'R7core' ), 'R7core', '<a href="http://underscores.me/" rel="designer">Underscores.me</a>' ); ?>
+                    <div class="pma-footer-box">
+                        <?php echo '<img src="'. get_template_directory_uri() .'/presentations/pma/pma_tp1_grfx_logo_foot.png" >' ;?><br />
+                        Rhino7 Franchise Development Corporation, Inc.<br />
+                        315 S. Salem St.<br />
+                        Suite 200-A<br />
+                        Apex, NC 27502
+                    </div>
+                    <div class="pma-footer-box">
+                        <br /><br />
+                        <a href="http://r7fdc.com" target="_blank" style="color:#666;">Rhino7 Website</a><span class="sep"> | </span>
+                        <a href="http://blog.r7fdc.com" target="_blank" style="color:#666;">Rhino7 News</a><span class="sep"> | </span>
+                        <a href="mailto:pmainfo@r7fdc.com" style="color:#666;">Email</a><span class="sep"> | </span>
+                        919.589.9999<br /><br />
+                        <a href="https://www.facebook.com/Rhino7FranchiseDevelopmentCorporation" target="_blank"><img src="<?php echo get_template_directory_uri(); ?>/48x48-facebook.png"></a>
+                        &nbsp; &nbsp;
+                        <a href="https://twitter.com/rhino7franchise" target="_blank"><img src="<?php echo get_template_directory_uri(); ?>/48x48-twitter.png"></a>
+
+                        <?php do_action( 'R7core_credits' ); ?>
+
+                    </div>
                 </div><!-- close .site-info -->
 
             </div>
         </div>
     </div><!-- close .container -->
 </footer><!-- close #colophon -->
-
-<?php //wp_footer(); ?><br /><br /><br />
+<br />
 
 </body>
 </html>
