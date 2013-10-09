@@ -40,9 +40,7 @@
             </div>
             <?php if ( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'pma-broker') : ?>
                 <div class="portal-nav col-6 col-lg-8">
-                    <button class="btn head-menu-button" type="button" style="padding-right:30px;">
-                        Menu
-                    </button>
+                    <img class="head-menu-button" src="<?php echo get_template_directory_uri();?>/presentations/pma/pma_tp1_grfx_home_menu_btn.png" style="cursor: pointer; display: inline-block;" >
                     <?php wp_nav_menu( array('menu' => 'pma-broker',
                         'container'       => 'div',
                         'container_class' => 'head-menu hidden',
@@ -79,31 +77,6 @@
 <?php if( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'pma-broker') : ?>
     <nav class="site-navigation">
         <div class="container pma-nav">
-            <div class="row" style="display:none;">
-                <div class="site-navigation-inner col-12">
-                    <div class="navbar">
-                        <!-- .navbar-toggle is used as the toggle for collapsed navbar content -->
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-
-                        <!-- The WordPress Menu goes here -->
-                        <?php wp_nav_menu(
-                            array(
-                                'theme_location' => 'primary',
-                                'container_class' => 'nav-collapse collapse navbar-responsive-collapse',
-                                'menu_class' => 'nav navbar-nav',
-                                'fallback_cb' => '',
-                                'menu_id' => 'main-menu',
-                                'walker' => new wp_bootstrap_navwalker()
-                            )
-                        ); ?>
-
-                    </div><!-- .navbar -->
-                </div>
-            </div>
 
             <div class="carousel slide" id="myCarousel"><!-- BEGIN Slideshow Carousel -->
                 <div class="carousel-inner">
