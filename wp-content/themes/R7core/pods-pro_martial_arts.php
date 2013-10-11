@@ -106,23 +106,37 @@
 
             <div class="sidebar col-12 col-lg-4">
                 <?php if( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) != 'pro_martial_arts') : ?>
-                    <?php wp_nav_menu( array('menu' => 'PRO_M_A',
-                        'container'       => 'div',
-                        'container_class' => 'side-menu',
-                        'menu_class'      => 'ddside',
-                        'depth' => 2
-                    ) ); ?>
-                    <script>
-                        jQuery(function(){
-                            jQuery("ul.ddside li").hover(function(){
-                                jQuery(this).addClass("hover");
-                                jQuery('ul:first',this).css('visibility', 'visible');
-                            }, function(){
-                                jQuery(this).removeClass("hover");
-                                jQuery('ul:first',this).css('visibility', 'hidden');
+                    <div class="navbar">
+                        <!-- .navbar-toggle is used as the toggle for collapsed navbar content -->
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+
+                        <!-- The WordPress Menu goes here -->
+                        <?php wp_nav_menu(
+                            array(
+                                'menu' => 'PRO_M_A',
+                                'theme_location' => 'primary',
+                                'container_class' => 'nav-collapse collapse navbar-responsive-collapse',
+                                'menu_class' => 'nav nav-pills nav-stacked',
+                                'fallback_cb' => '',
+                                'walker' => new wp_bootstrap_navwalker()
+                            )
+                        ); ?>
+                        <script>
+                            jQuery(function(){
+                                jQuery("li.menu-item").hover(function(){
+                                    jQuery(this).addClass("hover");
+                                    jQuery('ul:first',this).css('display', 'inline');
+                                }, function(){
+                                    jQuery(this).removeClass("hover");
+                                    jQuery('ul:first',this).css('display', 'none');
+                                });
                             });
-                        });
-                    </script>
+                        </script>
+                    </div><!-- .navbar -->
                 <?php else : ?>
                     <?php echo '<img src="'. get_template_directory_uri() .'/presentations/pma/pma_tp1_grfx_home_sb_img1.png" >' ;?>
                 <?php endif; ?>

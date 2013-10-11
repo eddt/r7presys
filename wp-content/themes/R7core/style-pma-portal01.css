@@ -54,6 +54,12 @@ body { font-size: 16px; }
     font-weight: bold;
     color: #fff;
 }
+.page-header {
+    border-bottom: 0px solid #fff;
+    margin: 0px;
+    padding-bottom: 10px;
+}
+.page-header h1 {font-size: 1.7em;}
 
 .site-header {
     margin-top:46px;
@@ -87,7 +93,7 @@ body { font-size: 16px; }
     font-size:14px;
     color:#666;
     line-height:1.1;
-    margin:15px;
+    margin-top:15px;
     display:inline-block;
     height: 120px;
     vertical-align:top;
@@ -154,7 +160,7 @@ ul.ddside li:hover > ul { visibility: visible; }
 #menu-pro_m_a {} /*assigned to the UL who's class is "menu" */
 
 .content-area {
-    margin: 0px 50px;
+    /*margin: 0px 50px;*/
 }
 
 .portal-nav {
@@ -189,6 +195,7 @@ ul.ddside li:hover > ul { visibility: visible; }
         float: right;
         margin: 30px 0px 0px 0px;
     }*/
+
 }
 
 @media (min-width: 1200px) {
@@ -199,10 +206,14 @@ ul.ddside li:hover > ul { visibility: visible; }
         margin: 30px 0px 0px 0px;
     }*/
 }
-
+@media (max-width: 767px) {
+    .page-header h1 {font-size: 1.2em;}
+}
 @media (max-width: 990px) {
     .side-menu { width: 50%; }
-    ul.ddside ul {width: 80%; left: 70%; }
+    ul.ddside ul {width: 80%; left: 70%; -moz-box-sizing: inherit; padding: 2px 4px; }
+    .sidebar { text-align:center; }
+
 }
 
 /*Bootstrap Overrides*/
@@ -287,4 +298,25 @@ ul.ddside li:hover > ul { visibility: visible; }
 }
 .open > .dropdown-menu {
     display: block;
+}
+.nav-collapse {
+    margin-top:40px;
+}
+.navbar {
+    background-color: #fff;
+    border-radius: 4px 4px 4px 4px;
+    margin-bottom: 20px;
+    min-height: 50px;
+    padding-left: 15px;
+    padding-right: 15px;
+    position: relative;
+}
+
+.navbar a {
+    color: #000;
+}
+.dropdown-menu {
+    left: 40%;
+    top: 70%;
+
 }

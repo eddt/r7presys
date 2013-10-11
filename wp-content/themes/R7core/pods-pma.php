@@ -104,34 +104,51 @@
     <div class="container pma-content">
         <div class="row">
 
-            <div class="sidebar col-12 col-lg-4">
+            <div class="sidebar col-12 col-sm-5 col-lg-4">
                 <?php if( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) != 'pma') : ?>
-                <?php wp_nav_menu( array('menu' => 'pma',
-                    'container'       => 'div',
-                    'container_class' => 'side-menu',
-                    'menu_class'      => 'ddside',
-                    'depth' => 2
-                ) ); ?>
-                <script>
-                    jQuery(function(){
-                        jQuery("ul.ddside li").hover(function(){
-                            jQuery(this).addClass("hover");
-                            jQuery('ul:first',this).css('visibility', 'visible');
-                        }, function(){
-                            jQuery(this).removeClass("hover");
-                            jQuery('ul:first',this).css('visibility', 'hidden');
-                        });
-                    });
-                </script>
+
+                    <div class="navbar">
+                        <!-- .navbar-toggle is used as the toggle for collapsed navbar content -->
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+
+                        <!-- The WordPress Menu goes here -->
+                        <?php wp_nav_menu(
+                            array(
+                                'menu' => 'pma',
+                                'theme_location' => 'primary',
+                                'container_class' => 'nav-collapse collapse navbar-responsive-collapse',
+                                'menu_class' => 'nav nav-pills nav-stacked',
+                                'fallback_cb' => '',
+                                'walker' => new wp_bootstrap_navwalker()
+                            )
+                        ); ?>
+                        <script>
+                            jQuery(function(){
+                                jQuery("li.menu-item").hover(function(){
+                                    jQuery(this).addClass("hover");
+                                    jQuery('ul:first',this).css('display', 'inline');
+                                }, function(){
+                                    jQuery(this).removeClass("hover");
+                                    jQuery('ul:first',this).css('display', 'none');
+                                });
+                            });
+                        </script>
+                    </div><!-- .navbar -->
+
                 <?php else : ?>
                     <?php echo '<img src="'. get_template_directory_uri() .'/presentations/pma/pma_tp1_grfx_home_sb_img1.png" >' ;?>
                 <?php endif; ?>
             </div><!-- close .sidebar -->
 
-            <div class="main-content-inner col-12 col-lg-8">
+            <div class="main-content-inner col-12 col-sm-7 col-lg-8">
 
-                <div id="primary" class="content-area">
+                <div id="primary" class="content-area col-lg-10 col-offset-1">
                     <div id="content" class="site-content" role="main">
+
                         <?php pods_content(); ?>
                     </div><!-- #content -->
                 </div><!-- #primary -->
@@ -147,14 +164,14 @@
             <div class="site-footer-inner col-12">
 
                 <div class="site-info">
-                    <div class="pma-footer-box">
+                    <div class="pma-footer-box col-12 col-sm-5 col-lg-4">
                         <?php echo '<img src="'. get_template_directory_uri() .'/presentations/pma/pma_tp1_grfx_logo_foot.png" >' ;?><br />
                         Rhino7 Franchise Development Corporation, Inc.<br />
                         315 S. Salem St.<br />
                         Suite 200-A<br />
                         Apex, NC 27502
                     </div>
-                    <div class="pma-footer-box">
+                    <div class="pma-footer-box col-10 col-sm-5 col-lg-6 col-offset-1">
                         <br /><br />
                         <a href="http://r7fdc.com" target="_blank" style="color:#666;">Rhino7 Website</a><span class="sep"> | </span>
                         <a href="http://blog.r7fdc.com" target="_blank" style="color:#666;">Rhino7 News</a><span class="sep"> | </span>
