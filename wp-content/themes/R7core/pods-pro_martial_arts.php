@@ -22,6 +22,7 @@
     <link rel="profile" href="http://gmpg.org/xfn/11">
     <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
     <?php wp_head(); ?>
+
     <?php echo '<link media="all" type="text/css" href="'. get_template_directory_uri() .'/style-pma-portal01.css" rel="stylesheet">'; ?>
 </head>
 <body <?php body_class(); ?>>
@@ -35,34 +36,39 @@
 
         <div class="row">
             <div class="site-branding col-6 col-lg-4">
-                <?php echo '<img src="'. get_template_directory_uri() .'/presentations/pma/pma_tp1_grfx_logo_sm.png" >' ;?>
+                <a href="<?php echo site_url(); ?>/pro_martial_arts">
+                    <?php echo '<img src="'. get_template_directory_uri() .'/presentations/pma/pma_tp1_grfx_logo_sm.png" >' ;?>
+                </a>
             </div>
             <?php if ( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'pro_martial_arts') : ?>
                 <div class="portal-nav col-6 col-lg-8">
-                    <img class="head-menu-button" src="<?php echo get_template_directory_uri();?>/presentations/pma/pma_tp1_grfx_home_menu_btn.png" style="cursor: pointer; display: inline-block;" >
-                    <?php wp_nav_menu( array('menu' => 'PRO_M_A',
-                        'container'       => 'div',
-                        'container_class' => 'head-menu hidden',
-                        'menu_class'      => 'dropdown',
-                        'depth' => 2
-                    ) ); ?>
-                    <script>
-                        jQuery('.head-menu-button').click(function() {
-                            jQuery('.head-menu').toggleClass('hidden');
-                        });
-
-                        jQuery(function(){
-                            jQuery("ul.dropdown li").hover(function(){
-                                jQuery(this).addClass("hover");
-                                jQuery('ul:first',this).css('visibility', 'visible');
-                            }, function(){
-                                jQuery(this).removeClass("hover");
-                                jQuery('ul:first',this).css('visibility', 'hidden');
+                    <div class="head-menu-button" style="display:inline;">
+                        <img src="<?php echo get_template_directory_uri();?>/presentations/pma/pma_tp1_grfx_home_menu_btn.png" style="cursor: pointer; display: inline-block;" >
+                        <?php wp_nav_menu( array('menu' => 'PRO_M_A',
+                            'container'       => 'div',
+                            'container_class' => 'head-menu',
+                            'menu_class'      => 'dropdown',
+                            'depth' => 2
+                        ) ); ?>
+                        <script>
+                            jQuery('.head-menu').css('visibility', 'hidden');
+                            jQuery('.head-menu-button').mouseenter(function() {
+                                jQuery('.head-menu').css('visibility', 'visible');
                             });
-                            jQuery("ul.dropdown li ul li:has(ul)").find("a:first").append(" &raquo; ");
-                        });
-                    </script>
-
+                            jQuery('.head-menu-button').mouseleave(function() {
+                                jQuery('.head-menu').css('visibility', 'hidden');
+                            });
+                            jQuery(function(){
+                                jQuery("ul.dropdown li").hover(function(){
+                                    jQuery(this).addClass("hover");
+                                    jQuery('ul:first',this).css('visibility', 'visible');
+                                }, function(){
+                                    jQuery(this).removeClass("hover");
+                                    jQuery('ul:first',this).css('visibility', 'hidden');
+                                });
+                            });
+                        </script>
+                    </div>
                 </div>
             <?php else : ?>
                 <div class="site-branding col-12 col-lg-8">
@@ -80,13 +86,13 @@
             <div class="carousel slide" id="myCarousel"><!-- BEGIN Slideshow Carousel -->
                 <div class="carousel-inner">
                     <div class="item">
-                        <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/pma/pma_tp1_grfx_slide01.png">
+                        <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/pma/pma_tp1_grfx_slide01.jpg">
                     </div>
                     <div class="item active">
-                        <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/pma/pma_tp1_grfx_slide02.png">
+                        <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/pma/pma_tp1_grfx_slide02.jpg">
                     </div>
                     <div class="item">
-                        <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/pma/pma_tp1_grfx_slide03.png">
+                        <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/pma/pma_tp1_grfx_slide03.jpg">
                     </div>
                 </div>
                 <a data-slide="prev" href="#myCarousel" class="left carousel-control">‹</a>
@@ -144,9 +150,27 @@
 
             <div class="main-content-inner col-12 col-lg-8">
 
-                <div id="primary" class="content-area">
+                <div id="primary" class="content-area col-lg-10 col-offset-1">
                     <div id="content" class="site-content" role="main">
-                        <?php pods_content(); ?>
+                        <?php /**
+                         * pods_content(); - removed, and a custom loop established for password functions
+                         * Changed get_template_part value from get_post_format() to get_post_type to allow
+                         * for all custom types to work as long as a content-[type].php file exists, or it
+                         * will default to content.php
+                         */ ?>
+                        <?php if ( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'pro_martial_arts') : ?>
+                            <?php pods_content(); ?>
+                        <?php else : ?>
+                            <?php /* The loop */ ?>
+                            <?php while ( have_posts() ) : the_post(); ?>
+                                <?php
+                                if ( ! post_password_required() ) {
+                                    the_post_thumbnail('full');
+                                }
+                                ?>
+                                <?php get_template_part( 'content', get_post_type() ); ?>
+                            <?php endwhile; ?>
+                        <?php endif; ?>
                     </div><!-- #content -->
                 </div><!-- #primary -->
 
@@ -188,6 +212,6 @@
     </div><!-- close .container -->
 </footer><!-- close #colophon -->
 <br />
-
+<?php wp_footer(); ?>
 </body>
 </html>
