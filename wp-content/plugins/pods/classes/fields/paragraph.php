@@ -124,13 +124,15 @@ class PodsField_Paragraph extends PodsField {
                 'label' => __( 'Allowed HTML Tags', 'pods' ),
                 'depends-on' => array( self::$type . '_allow_html' => true ),
                 'default' => 'strong em a ul ol li b i',
-                'type' => 'text'
-            )/*,
+                'type' => 'text',
+				'help' => __( 'Format: strong em a ul ol li b i', 'pods' )
+            ),
             self::$type . '_max_length' => array(
                 'label' => __( 'Maximum Length', 'pods' ),
                 'default' => 0,
-                'type' => 'number'
-            ),
+                'type' => 'number',
+                'help' => __( 'Set to -1 for no limit', 'pods' )
+            )/*,
             self::$type . '_size' => array(
                 'label' => __( 'Field Size', 'pods' ),
                 'default' => 'medium',
@@ -142,6 +144,14 @@ class PodsField_Paragraph extends PodsField {
                 )
             )*/
         );
+
+		if ( function_exists( 'Markdown' ) ) {
+			$options[ 'output_options' ][ 'group' ][ self::$type . '_allow_markdown' ] = array(
+				'label' => __( 'Allow Markdown Syntax?', 'pods' ),
+				'default' => 0,
+				'type' => 'boolean'
+			);
+		}
 
         return $options;
     }
@@ -155,7 +165,13 @@ class PodsField_Paragraph extends PodsField {
      * @since 2.0
      */
     public function schema ( $options = null ) {
+        $length = (int) pods_v( self::$type . '_max_length', $options, 0 );
+
         $schema = 'LONGTEXT';
+
+		if ( 0 < $length ) {
+        	$schema = 'VARCHAR(' . $length . ')';
+		}
 
         return $schema;
     }
@@ -196,6 +212,10 @@ class PodsField_Paragraph extends PodsField {
 
             $value = do_shortcode( $value );
         }
+
+		if ( function_exists( 'Markdown' ) && 1 == pods_v( self::$type . '_allow_markdown', $options ) ) {
+			$value = Markdown( $value );
+		}
 
         return $value;
     }
@@ -247,6 +267,12 @@ class PodsField_Paragraph extends PodsField {
     public function pre_save ( $value, $id = null, $name = null, $options = null, $fields = null, $pod = null, $params = null ) {
         $value = $this->strip_html( $value, $options );
 
+		$length = (int) pods_var( self::$type . '_max_length', $options, 0 );
+
+		if ( 0 < $length && $length < pods_mb_strlen( $value ) ) {
+			$value = pods_mb_substr( $value, 0, $length );
+		}
+
         return $value;
     }
 
@@ -293,13 +319,19 @@ class PodsField_Paragraph extends PodsField {
         if ( 1 == pods_var( self::$type . '_allow_html', $options ) ) {
             $allowed_html_tags = '';
 
-            if ( 0 < strlen( pods_var( self::$type . '_allowed_html_tags', $options ) ) ) {
-                $allowed_html_tags = explode( ' ', trim( pods_var( self::$type . '_allowed_html_tags', $options ) ) );
-                $allowed_html_tags = '<' . implode( '><', $allowed_html_tags ) . '>';
-            }
+			if ( 0 < strlen( pods_var( self::$type . '_allowed_html_tags', $options ) ) ) {
+				$allowed_tags = pods_var( self::$type . '_allowed_html_tags', $options );
+				$allowed_tags = trim( str_replace( array( '<', '>', ',' ), ' ', $allowed_tags ) );
+				$allowed_tags = explode( ' ', $allowed_tags );
+				$allowed_tags = array_unique( array_filter( $allowed_tags ) );
 
-            if ( !empty( $allowed_html_tags ) && '<>' != $allowed_html_tags )
-                $value = strip_tags( $value, $allowed_html_tags );
+				if ( !empty( $allowed_tags ) ) {
+					$allowed_html_tags = '<' . implode( '><', $allowed_tags ) . '>';
+				}
+			}
+
+			if ( !empty( $allowed_html_tags ) )
+				$value = strip_tags( $value, $allowed_html_tags );
         }
         else
             $value = strip_tags( $value );

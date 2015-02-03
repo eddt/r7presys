@@ -80,7 +80,7 @@ class PodsField_Website extends PodsField {
                 'label' => __( 'Maximum Length', 'pods' ),
                 'default' => 255,
                 'type' => 'number',
-                'help' => __( 'Set to 0 for no limit', 'pods' )
+                'help' => __( 'Set to -1 for no limit', 'pods' )
             ),
             self::$type . '_html5' => array(
                 'label' => __( 'Enable HTML5 Input Field?', 'pods' ),
@@ -110,7 +110,7 @@ class PodsField_Website extends PodsField {
      * @since 2.0
      */
     public function schema ( $options = null ) {
-        $length = (int) pods_var( self::$type . '_max_length', $options, 255, null, true );
+        $length = (int) pods_var( self::$type . '_max_length', $options, 255 );
 
         $schema = 'VARCHAR(' . $length . ')';
 
@@ -277,6 +277,12 @@ class PodsField_Website extends PodsField {
                     $value = trim( $value, '/' );
             }
         }
+
+		$length = (int) pods_var( self::$type . '_max_length', $options, 255 );
+
+		if ( 0 < $length && $length < pods_mb_strlen( $value ) ) {
+			$value = pods_mb_substr( $value, 0, $length );
+		}
 
         return $value;
     }

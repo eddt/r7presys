@@ -190,9 +190,9 @@ class PodsField_Avatar extends PodsField {
             return;
         }
 
-        if ( 'plupload' == pods_var( self::$type . '_uploader', $options ) )
+        if ( 'plupload' == pods_v( self::$type . '_uploader', $options ) )
             $field_type = 'plupload';
-        elseif ( 'attachment' == pods_var( self::$type . '_uploader', $options ) ) {
+        elseif ( 'attachment' == pods_v( self::$type . '_uploader', $options ) ) {
             if ( !pods_version_check( 'wp', '3.5' ) || !is_admin() ) // @todo test frontend media modal
                 $field_type = 'attachment';
             else
@@ -200,8 +200,8 @@ class PodsField_Avatar extends PodsField {
         }
         else {
             // Support custom File Uploader integration
-            do_action( 'pods_form_ui_field_avatar_uploader_' . pods_var( self::$type . '_uploader', $options ), $name, $value, $options, $pod, $id );
-            do_action( 'pods_form_ui_field_avatar_uploader', pods_var( self::$type . '_uploader', $options ), $name, $value, $options, $pod, $id );
+            do_action( 'pods_form_ui_field_avatar_uploader_' . pods_v( self::$type . '_uploader', $options ), $name, $value, $options, $pod, $id );
+            do_action( 'pods_form_ui_field_avatar_uploader', pods_v( self::$type . '_uploader', $options ), $name, $value, $options, $pod, $id );
             return;
         }
 
@@ -298,6 +298,14 @@ class PodsField_Avatar extends PodsField {
      * @return string <img> tag for the user's avatar
      */
     public function get_avatar ( $avatar, $id_or_email, $size, $default = '', $alt ='' ) {
+        // Don't replace for the Avatars section of the Discussion settings page
+        if ( is_admin() ) {
+            $current_screen = get_current_screen();
+            if ( ! is_null( $current_screen ) && 'options-discussion' == $current_screen->id && 32 == $size ) {
+                return $avatar;
+            }
+        }
+
         $_user_ID = 0;
 
         if ( is_numeric( $id_or_email ) && 0 < $id_or_email )
@@ -312,6 +320,9 @@ class PodsField_Avatar extends PodsField {
             if ( !empty( $_user ) )
                 $_user_ID = (int) $_user->ID;
         }
+
+		// Include PodsMeta if not already included
+		pods_meta();
 
         if ( 0 < $_user_ID && !empty( PodsMeta::$user ) ) {
             $avatar_cached = pods_cache_get( $_user_ID . '-' . $size, 'pods_avatars' );

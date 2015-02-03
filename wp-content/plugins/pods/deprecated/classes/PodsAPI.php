@@ -1,4 +1,6 @@
 <?php
+require_once( PODS_DIR . 'deprecated/deprecated.php' );
+
 /**
  * @package Pods\Deprecated
  */
@@ -24,7 +26,7 @@ class PodsAPI_Deprecated {
      * @license http://www.gnu.org/licenses/gpl-2.0.html
      * @since 2.0
      */
-    public function __construct ( &$obj ) {
+    public function __construct ( $obj ) {
         // backwards-compatibility with references to $this->var_name
         $vars = get_object_vars( $obj );
 

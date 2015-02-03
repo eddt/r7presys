@@ -34,6 +34,11 @@
          'hh_mm_ss' => 'HH:mm:ss'
     );
 
+	$date_format = apply_filters( 'pods_form_ui_field_date_js_formats', $date_format );
+
+	$time_format = apply_filters( 'pods_form_ui_field_time_js_formats', $time_format );
+	$time_format_24 = apply_filters( 'pods_form_ui_field_time_js_formats_24', $time_format_24 );
+
     wp_enqueue_script( 'jquery-ui-datepicker' );
     wp_enqueue_script( 'jquery-ui-timepicker' );
     wp_enqueue_style( 'jquery-ui' );
@@ -91,7 +96,7 @@
 
     $formatted_date = $value;
 
-    if ( 1 == pods_var( $form_field_type . '_allow_empty', $options, 1 ) && in_array( $value, array( '0000-00-00', '0000-00-00 00:00:00', '00:00:00' ) ) )
+    if ( 1 == pods_var( $form_field_type . '_allow_empty', $options, 1 ) && in_array( $value, array( '', '0000-00-00', '0000-00-00 00:00:00', '00:00:00' ) ) )
         $formatted_date = $value = '';
     elseif ( 'text' != $type ) {
         $formatted_date = $value;

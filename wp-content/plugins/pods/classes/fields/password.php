@@ -59,7 +59,7 @@ class PodsField_Password extends PodsField {
                 'label' => __( 'Maximum Length', 'pods' ),
                 'default' => 255,
                 'type' => 'number',
-                'help' => __( 'Set to 0 for no limit', 'pods' )
+                'help' => __( 'Set to -1 for no limit', 'pods' )
             )/*,
             self::$type . '_size' => array(
                 'label' => __( 'Field Size', 'pods' ),
@@ -85,7 +85,7 @@ class PodsField_Password extends PodsField {
      * @since 2.0
      */
     public function schema ( $options = null ) {
-        $length = (int) pods_var( self::$type . '_max_length', $options, 255, null, true );
+        $length = (int) pods_var( self::$type . '_max_length', $options, 255 );
 
         $schema = 'VARCHAR(' . $length . ')';
 
@@ -157,5 +157,29 @@ class PodsField_Password extends PodsField {
             return $errors;
 
         return true;
+    }
+
+    /**
+     * Change the value or perform actions after validation but before saving to the DB
+     *
+     * @param mixed $value
+     * @param int $id
+     * @param string $name
+     * @param array $options
+     * @param array $fields
+     * @param array $pod
+     * @param object $params
+     *
+     * @return mixed|string
+     * @since 2.0
+     */
+    public function pre_save ( $value, $id = null, $name = null, $options = null, $fields = null, $pod = null, $params = null ) {
+		$length = (int) pods_var( self::$type . '_max_length', $options, 255 );
+
+		if ( 0 < $length && $length < pods_mb_strlen( $value ) ) {
+			$value = pods_mb_substr( $value, 0, $length );
+		}
+
+        return $value;
     }
 }

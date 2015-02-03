@@ -83,7 +83,6 @@ class Pods_Roles extends PodsComponent {
             'data' => $roles,
             'total' => count( $roles ),
             'total_found' => count( $roles ),
-            'icon' => PODS_URL . 'ui/images/icon32.png',
             'items' => 'Roles',
             'item' => 'Role',
             'fields' => array(
@@ -170,7 +169,7 @@ class Pods_Roles extends PodsComponent {
         pods_view( PODS_DIR . 'components/Roles/ui/edit.php', compact( array_keys( get_defined_vars() ) ) );
     }
 
-    function admin_delete ( $id, &$obj ) {
+    function admin_delete ( $id, $obj ) {
         global $wp_roles;
 
         $id = $obj->id;

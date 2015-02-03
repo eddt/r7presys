@@ -16,6 +16,8 @@
         'y' => 'yy'
     );
 
+	$date_format = apply_filters( 'pods_form_ui_field_date_js_formats', $date_format );
+
     wp_enqueue_script( 'jquery-ui-datepicker' );
     wp_enqueue_style( 'jquery-ui' );
 
@@ -46,7 +48,7 @@
 
     $formatted_date = $value;
 
-    if ( 1 == pods_var( $form_field_type . '_allow_empty', $options, 1 ) && in_array( $value, array( '0000-00-00', '0000-00-00 00:00:00', '00:00:00' ) ) )
+    if ( 1 == pods_var( $form_field_type . '_allow_empty', $options, 1 ) && in_array( $value, array( '', '0000-00-00', '0000-00-00 00:00:00', '00:00:00' ) ) )
         $formatted_date = $value = '';
     elseif ( 'text' != $type ) {
         $formatted_date = $value;

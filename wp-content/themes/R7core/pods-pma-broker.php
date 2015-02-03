@@ -30,7 +30,7 @@
 <header id="masthead" class="site-header" role="banner">
     <div id="topbar" class="container">
         <span style="float:left; font-size:16px; font-weight:bold; color:#fff; margin-top:8px;">A <span style="color:#000; font-style:italic;">Rhino7</span> Franchise Portal</span>
-        <span style="float:right; font-size:16px; font-weight:bold; color:#fff; margin-top:8px;">919.589.9999 | <a href="mailto:pmainfo@r7fdc.com" style="color:#fff;">Email</a></span>
+        <span style="float:right; font-size:16px; font-weight:bold; color:#fff; margin-top:8px;">919.977.9517 | <a href="mailto:pmainfo@r7fdc.com" style="color:#fff;">Email</a></span>
     </div>
     <div class="container pma-header">
 
@@ -75,6 +75,7 @@
 </header><!-- #masthead -->
 
 <?php if( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'pma-broker') : ?>
+    <div class="nav-inst" style="font-size:12px; margin-top:10px; font-weight:bold;">To view information, simply click on each main topic page, and then each of the subpage topics in each section.</div>
     <nav class="site-navigation">
         <div class="container pma-nav">
 
@@ -165,16 +166,19 @@
                     <div class="pma-footer-box">
                         <?php echo '<img src="'. get_template_directory_uri() .'/presentations/pma/pma_tp1_grfx_logo_foot.png" >' ;?><br />
                         Rhino7 Franchise Development Corporation, Inc.<br />
-                        315 S. Salem St.<br />
+                        431 Keisler Dr<br />
+                        Ste. 201<br />
+                        Cary, NC 27518<br />
+                        <!--315 S. Salem St.<br />
                         Suite 200-A<br />
-                        Apex, NC 27502
+                        Apex, NC 27502-->
                     </div>
                     <div class="pma-footer-box">
                         <br /><br />
                         <a href="http://r7fdc.com" target="_blank" style="color:#666;">Rhino7 Website</a><span class="sep"> | </span>
                         <a href="http://blog.r7fdc.com" target="_blank" style="color:#666;">Rhino7 News</a><span class="sep"> | </span>
                         <a href="mailto:pmainfo@r7fdc.com" style="color:#666;">Email</a><span class="sep"> | </span>
-                        919.589.9999<br /><br />
+                        919.977.9517<br /><br />
                         <a href="https://www.facebook.com/Rhino7FranchiseDevelopmentCorporation" target="_blank"><img src="<?php echo get_template_directory_uri(); ?>/48x48-facebook.png"></a>
                         &nbsp; &nbsp;
                         <a href="https://twitter.com/rhino7franchise" target="_blank"><img src="<?php echo get_template_directory_uri(); ?>/48x48-twitter.png"></a>

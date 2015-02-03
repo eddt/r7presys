@@ -91,6 +91,8 @@ class PodsAdmin {
      */
     public function admin_head () {
         wp_register_style( 'pods-admin', PODS_URL . 'ui/css/pods-admin.css', array(), PODS_VERSION );
+        
+        wp_register_style( 'pods-font', PODS_URL . 'ui/css/pods-font.css', array(), PODS_VERSION );
 
         wp_register_script( 'pods-floatmenu', PODS_URL . 'ui/js/floatmenu.js', array(), PODS_VERSION );
 
@@ -120,8 +122,8 @@ class PodsAdmin {
 
                 wp_enqueue_script( 'pods-floatmenu' );
 
-                wp_enqueue_style( 'pods-qtip' );
-                wp_enqueue_script( 'jquery-qtip' );
+                wp_enqueue_style( 'jquery-qtip2' );
+                wp_enqueue_script( 'jquery-qtip2' );
                 wp_enqueue_script( 'pods-qtip-init' );
 
                 wp_enqueue_script( 'pods' );
@@ -156,10 +158,12 @@ class PodsAdmin {
                 }
             }
         }
+
+        wp_enqueue_style( 'pods-font' );
     }
 
     /**
-     * Buld the admin menus
+     * Build the admin menus
      *
      * @since 2.0
      */
@@ -277,7 +281,7 @@ class PodsAdmin {
                             if ( null === $parent_page ) {
                                 $parent_page = $page;
 
-                                add_menu_page( 'Pods', 'Pods', 'read', $parent_page, null, PODS_URL . 'ui/images/icon16.png', '58.5' );
+                                add_menu_page( 'Pods', 'Pods', 'read', $parent_page, null, 'dashicons-pods', '58.5' );
                             }
 
                             $all_title = $plural_label;
@@ -298,7 +302,7 @@ class PodsAdmin {
                             if ( null === $parent_page ) {
                                 $parent_page = $page;
 
-                                add_menu_page( 'Pods', 'Pods', 'read', $parent_page, null, PODS_URL . 'ui/images/icon16.png', '58.5' );
+                                add_menu_page( 'Pods', 'Pods', 'read', $parent_page, null, 'dashicons-pods', '58.5' );
                             }
 
                             $add_title = __( 'Add New', 'pods' ) . ' ' . $singular_label;
@@ -443,6 +447,8 @@ class PodsAdmin {
 
             if ( empty( $all_pods ) )
                 unset( $admin_menus[ 'pods' ] );
+
+            add_filter( 'parent_file' , array( $this, 'parent_file' ) );
         }
         else {
             $admin_menus = array(
@@ -465,7 +471,14 @@ class PodsAdmin {
             add_action( 'admin_notices', array( $this, 'upgrade_notice' ) );
         }
 
-        $admin_menus = apply_filters( 'pods_admin_menu', $admin_menus );
+		/**
+		 * Add or change Pods Admin menu items
+		 *
+		 * @params array $admin_menus The submenu items in Pods Admin menu.
+		 *
+		 * @since unknown
+		 */
+		$admin_menus = apply_filters( 'pods_admin_menu', $admin_menus );
 
         $parent = false;
 
@@ -489,7 +502,7 @@ class PodsAdmin {
                     if ( 'pods-upgrade' == $parent )
                         $menu = __( 'Pods Upgrade', 'pods' );
 
-                    add_menu_page( $menu, $menu, 'read', $parent, null, PODS_URL . 'ui/images/icon16.png' );
+                    add_menu_page( $menu, $menu, 'read', $parent, null, 'dashicons-pods' );
                 }
 
                 add_submenu_page( $parent, $menu_item[ 'label' ], $menu_item[ 'label' ], 'read', $page, $menu_item[ 'function' ] );
@@ -498,6 +511,54 @@ class PodsAdmin {
                     PodsInit::$components->menu( $parent );
             }
         }
+    }
+
+    /**
+     * Set the correct parent_file to highlight the correct top level menu
+     */
+    public function parent_file ( $parent_file ) {
+        global $current_screen;
+
+        if ( isset( $current_screen ) && ! empty( $current_screen->taxonomy ) ) {
+            $taxonomies = PodsMeta::$taxonomies;
+            if ( !empty( $taxonomies ) ) {
+                foreach ( (array) $taxonomies as $pod ) {
+                    if ( $current_screen->taxonomy !== $pod[ 'name' ] )
+                        continue;
+
+                    $menu_slug = 'edit-tags.php?taxonomy=' . $pod[ 'name' ];
+                    $menu_location = pods_var( 'menu_location', $pod[ 'options' ], 'default' );
+                    $menu_location_custom = pods_var( 'menu_location_custom', $pod[ 'options' ], '' );
+
+                    if ( 'settings' == $menu_location )
+                        $parent_file = 'options-general.php';
+                    elseif ( 'appearances' == $menu_location )
+                        $parent_file = 'themes.php';
+                    elseif ( 'objects' == $menu_location )
+                        $parent_file = $menu_slug;
+                    elseif ( 'top' == $menu_location )
+                        $parent_file = $menu_slug;
+                    elseif ( 'submenu' == $menu_location && !empty( $menu_location_custom ) ) {
+                        $parent_file = $menu_location_custom;
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        if ( isset( $current_screen ) && ! empty( $current_screen->post_type ) ) {
+            global $submenu_file;
+            $components = PodsInit::$components->components;
+            foreach ( $components as $component => $component_data ) {
+                if ( ! empty( $component_data[ 'MenuPage' ] ) && $parent_file === $component_data[ 'MenuPage' ] ) {
+                    $parent_file = 'pods';
+                    $submenu_file = $component_data[ 'MenuPage' ];
+                }
+            }
+        }
+
+        return $parent_file;
     }
 
     public function upgrade_notice () {
@@ -518,195 +579,10 @@ class PodsAdmin {
 
         $pod = pods( $pod_name, pods_var( 'id', 'get', null, null, true ) );
 
-        if ( 'custom' != pods_var( 'ui_style', $pod->pod_data[ 'options' ], 'post_type', null, true ) ) {
-            $default = 'manage';
+        if ( false !== strpos( $_GET[ 'page' ], 'pods-add-new-' ) )
+            $_GET[ 'action' ] = pods_var( 'action', 'get', 'add' );
 
-            if ( false !== strpos( $_GET[ 'page' ], 'pods-add-new-' ) )
-                $default = 'add';
-
-            $actions_enabled = pods_var_raw( 'ui_actions_enabled', $pod->pod_data[ 'options' ] );
-
-            if ( !empty( $actions_enabled ) )
-                $actions_enabled = (array) $actions_enabled;
-            else
-                $actions_enabled = array();
-
-            $available_actions = array(
-                'add',
-                'edit',
-                'duplicate',
-                'delete',
-                'reorder',
-                'export'
-            );
-
-            if ( !empty( $actions_enabled ) ) {
-                $actions_disabled = array(
-                    'view' => 'view'
-                );
-
-                foreach ( $available_actions as $action ) {
-                    if ( !in_array( $action, $actions_enabled ) )
-                        $actions_disabled[ $action ] = $action;
-                }
-            }
-            else {
-                $actions_disabled = array(
-                    'duplicate' => 'duplicate',
-                    'view' => 'view',
-                    'export' => 'export'
-                );
-
-                if ( 1 == pods_var( 'ui_export', $pod->pod_data[ 'options' ], 0 ) )
-                    unset( $actions_disabled[ 'export' ] );
-            }
-
-            $author_restrict = false;
-
-            if ( isset( $pod->fields[ 'author' ] ) && 'pick' == $pod->fields[ 'author' ][ 'type' ] && 'user' == $pod->fields[ 'author' ][ 'pick_object' ] )
-                $author_restrict = 'author.ID';
-
-            if ( !pods_is_admin( array( 'pods', 'pods_content' ) ) ) {
-                if ( !current_user_can( 'pods_add_' . $pod_name ) ) {
-                    $actions_disabled[ 'add' ] = 'add';
-                    $default = 'manage';
-                }
-
-                if ( !$author_restrict && !current_user_can( 'pods_edit_' . $pod_name ) && !current_user_can( 'pods_edit_others_' . $pod_name ) )
-                    $actions_disabled[ 'edit' ] = 'edit';
-
-                if ( !$author_restrict && !current_user_can( 'pods_delete_' . $pod_name ) && !current_user_can( 'pods_delete_others_' . $pod_name ) )
-                    $actions_disabled[ 'delete' ] = 'delete';
-
-                if ( !current_user_can( 'pods_reorder_' . $pod_name ) )
-                    $actions_disabled[ 'reorder' ] = 'reorder';
-
-                if ( !current_user_can( 'pods_export_' . $pod_name ) )
-                    $actions_disabled[ 'export' ] = 'export';
-            }
-
-            $_GET[ 'action' ] = pods_var( 'action', 'get', $default );
-
-            $index = $pod->pod_data[ 'field_id' ];
-            $label = __( 'ID', 'pods' );
-
-            if ( isset( $pod->pod_data[ 'fields' ][ $pod->pod_data[ 'field_index' ] ] ) ) {
-                $index = $pod->pod_data[ 'field_index' ];
-                $label = $pod->pod_data[ 'fields' ][ $pod->pod_data[ 'field_index' ] ];
-            }
-
-            $manage = array(
-                $index => $label
-            );
-
-            if ( isset( $pod->pod_data[ 'fields' ][ 'modified' ] ) )
-                $manage[ 'modified' ] = $pod->pod_data[ 'fields' ][ 'modified' ][ 'label' ];
-
-            $manage_fields = pods_var_raw( 'ui_fields_manage', $pod->pod_data[ 'options' ] );
-
-            if ( !empty( $manage_fields ) ) {
-                $manage_new = array();
-
-                foreach ( $manage_fields as $manage_field ) {
-                    if ( isset( $pod->pod_data[ 'fields' ][ $manage_field ] ) )
-                        $manage_new[ $manage_field ] = $pod->pod_data[ 'fields' ][ $manage_field ];
-                    elseif ( isset( $pod->pod_data[ 'object_fields' ][ $manage_field ] ) )
-                        $manage_new[ $manage_field ] = $pod->pod_data[ 'object_fields' ][ $manage_field ];
-                    elseif ( $manage_field == $pod->pod_data[ 'field_id' ] ) {
-                        $field = array(
-                            'name' => $manage_field,
-                            'label' => 'ID',
-                            'type' => 'number',
-                            'width' => '8%'
-                        );
-
-                        $manage_new[ $manage_field ] = PodsForm::field_setup( $field, null, $field[ 'type' ] );
-                    }
-                }
-
-                if ( !empty( $manage_new ) )
-                    $manage = $manage_new;
-            }
-
-            $manage = apply_filters( 'pods_admin_ui_fields_' . $pod->pod, apply_filters( 'pods_admin_ui_fields', $manage, $pod->pod, $pod ), $pod->pod, $pod );
-
-            $icon = pods_var_raw( 'ui_icon', $pod->pod_data[ 'options' ] );
-
-            if ( !empty( $icon ) )
-                $icon = pods_image_url( $icon, '32x32' );
-
-            $filters = pods_var_raw( 'ui_filters', $pod->pod_data[ 'options' ] );
-
-            if ( !empty( $filters ) ) {
-                $filters_new = array();
-
-                foreach ( $filters as $filter_field ) {
-                    if ( isset( $pod->pod_data[ 'fields' ][ $filter_field ] ) )
-                        $filters_new[ $filter_field ] = $pod->pod_data[ 'fields' ][ $filter_field ];
-                    elseif ( isset( $pod->pod_data[ 'object_fields' ][ $filter_field ] ) )
-                        $filters_new[ $filter_field ] = $pod->pod_data[ 'object_fields' ][ $filter_field ];
-                }
-
-                $filters = $filters_new;
-            }
-
-            $ui = array(
-                'pod' => $pod,
-                'fields' => array(
-                    'manage' => $manage,
-                    'add' => $pod->pod_data[ 'fields' ],
-                    'edit' => $pod->pod_data[ 'fields' ],
-                    'duplicate' => $pod->pod_data[ 'fields' ]
-                ),
-                'icon' => $icon,
-                'actions_disabled' => $actions_disabled
-            );
-
-            if ( !empty( $filters ) ) {
-                $ui[ 'fields' ][ 'search' ] = $filters;
-                $ui[ 'filters' ] = array_keys( $filters );
-                $ui[ 'filters_enhanced' ] = true;
-            }
-
-            $reorder_field = pods_var_raw( 'ui_reorder_field', $pod->pod_data[ 'options' ] );
-
-            if ( in_array( 'reorder', $actions_enabled ) && !in_array( 'reorder', $actions_disabled ) && !empty( $reorder_field ) && ( ( !empty( $pod->pod_data[ 'object_fields' ] ) && isset( $pod->pod_data[ 'object_fields' ][ $reorder_field ] ) ) || isset( $pod->pod_data[ 'fields' ][ $reorder_field ] ) ) ) {
-                $ui[ 'reorder' ] = array( 'on' => $reorder_field );
-                $ui[ 'orderby' ] = $reorder_field;
-                $ui[ 'orderby_dir' ] = 'ASC';
-            }
-
-            if ( !empty( $author_restrict ) )
-                $ui[ 'restrict' ] = array( 'author_restrict' => $author_restrict );
-
-            if ( !in_array( 'delete', $ui[ 'actions_disabled' ] ) ) {
-                $ui[ 'actions_bulk' ] = array(
-                    'delete' => array(
-                        'label' => __( 'Delete', 'pods' )
-                        // callback not needed, Pods has this built-in for delete
-                    )
-                );
-            }
-
-            if ( strlen( pods_var( 'detail_url', $pod->pod_data ) ) < 1 ) {
-                $ui[ 'actions_custom' ] = array(
-                    'view_url' => array(
-                        'label' => 'View',
-                        'link' => get_site_url() . '/' . pods_var( 'detail_url', $pod->pod_data[ 'options' ] )
-                    )
-                );
-            }
-
-            // @todo Customize the Add New / Manage links to point to their correct menu items
-
-            $ui = apply_filters( 'pods_admin_ui_' . $pod->pod, apply_filters( 'pods_admin_ui', $ui, $pod->pod, $pod ), $pod->pod, $pod );
-
-            pods_ui( $ui );
-        }
-        else {
-            do_action( 'pods_admin_ui_custom', $pod );
-            do_action( 'pods_admin_ui_custom_' . $pod->pod, $pod );
-        }
+        $pod->ui();
     }
 
     /**
@@ -729,7 +605,7 @@ class PodsAdmin {
 
             $_GET[ 'action' ] = 'edit';
 
-            $page_title = pods_var_raw( 'label', $pod->pod_data[ 'options' ], ucwords( str_replace( '_', ' ', $pod->pod_data[ 'name' ] ) ), null, true );
+            $page_title = pods_var_raw( 'label', $pod->pod_data, ucwords( str_replace( '_', ' ', $pod->pod_data[ 'name' ] ) ), null, true );
 
             $ui = array(
                 'pod' => $pod,
@@ -768,6 +644,19 @@ class PodsAdmin {
      * @return string
      */
     public function media_button ( $context = null ) {
+
+		/**
+		 * Filter to remove Pods shortcode button from the post editor.
+		 *
+		 * @param bool. Set to false to block the shortcode button from appearing.
+		 * @param string $context
+		 *
+		 * @since 2.3.19
+		 */
+		if ( !apply_filters( 'pods_admin_media_button', true, $context ) ) {
+			return '';
+		}
+
         $current_page = basename( $_SERVER[ 'PHP_SELF' ] );
         $current_page = explode( '?', $current_page );
         $current_page = explode( '#', $current_page[ 0 ] );
@@ -775,11 +664,11 @@ class PodsAdmin {
 
         // Only show the button on post type pages
         if ( !in_array( $current_page, array( 'post-new.php', 'post.php' ) ) )
-            return $context;
+            return '';
 
         add_action( 'admin_footer', array( $this, 'mce_popup' ) );
 
-        echo '<a href="#TB_inline?width=640&inlineId=pods_shortcode_form" class="thickbox" id="add_pod_button" title="Pods Shortcode"><img src="' . PODS_URL . 'ui/images/icon16.png" alt="Pods Shortcode" /></a>';
+        echo '<a href="#TB_inline?width=640&inlineId=pods_shortcode_form" class="thickbox button" id="add_pod_button" title="Pods Shortcode"><img style="padding: 0px 6px 0px 0px; margin: -3px 0px 0px;" src="' . PODS_URL . 'ui/images/icon16.png" alt="' . __('Pods Shortcode' ,'pods') . '" />' . __('Pods Shortcode' ,'pods') . '</a>';
     }
 
     /**
@@ -871,6 +760,7 @@ class PodsAdmin {
                     continue;
                 }
 
+				$pod[ 'real_type' ] = $pod[ 'type' ];
                 $pod[ 'type' ] = $types[ $pod[ 'type' ] ];
             }
             elseif ( 'all' != $view )
@@ -885,7 +775,9 @@ class PodsAdmin {
                 'id' => $pod[ 'id' ],
                 'label' => pods_var_raw( 'label', $pod ),
                 'name' => pods_var_raw( 'name', $pod ),
+                'object' => pods_var_raw( 'object', $pod ),
                 'type' => pods_var_raw( 'type', $pod ),
+                'real_type' => pods_var_raw( 'real_type', $pod ),
                 'storage' => pods_var_raw( 'storage', $pod ),
                 'field_count' => count( $pod[ 'fields' ] )
             );
@@ -907,7 +799,6 @@ class PodsAdmin {
             'row' => $row,
             'total' => count( $pods ),
             'total_found' => count( $pods ),
-            'icon' => PODS_URL . 'ui/images/icon32.png',
             'items' => 'Pods',
             'item' => 'Pod',
             'fields' => array(
@@ -917,11 +808,16 @@ class PodsAdmin {
             'actions_custom' => array(
                 'add' => array( $this, 'admin_setup_add' ),
                 'edit' => array( $this, 'admin_setup_edit' ),
-                'duplicate' => array( $this, 'admin_setup_duplicate' ),
+                'duplicate' => array(
+					'callback' => array( $this, 'admin_setup_duplicate' ),
+					'restrict_callback' => array( $this, 'admin_setup_duplicate_restrict' )
+				),
                 'reset' => array(
                     'label' => __( 'Delete All Items', 'pods' ),
                     'confirm' => __( 'Are you sure you want to delete all items from this Pod? If this is an extended Pod, it will remove the original items extended too.', 'pods' ),
-                    'callback' => array( $this, 'admin_setup_reset' )
+                    'callback' => array( $this, 'admin_setup_reset' ),
+					'restrict_callback' => array( $this, 'admin_setup_reset_restrict' ),
+					'nonce' => true
                 ),
                 'delete' => array( $this, 'admin_setup_delete' )
             ),
@@ -1021,7 +917,28 @@ class PodsAdmin {
         if ( 'taxonomy' == pods_var( 'type', $pod ) && !$fields )
             $tabs[ 'extra-fields' ] = __( 'Extra Fields', 'pods' );
 
-        $tabs = apply_filters( 'pods_admin_setup_edit_tabs', $tabs, $pod, compact( array( 'fields', 'labels', 'admin_ui', 'advanced' ) ) );
+		$addtl_args = compact( array( 'fields', 'labels', 'admin_ui', 'advanced' ) );
+
+		/**
+		 * Add or modify tabs in Pods editor for a specific Pod
+		 *
+		 * @params array $tabs Tabs to set.
+		 * @params object $pod Current Pods object
+		 * @params array $addtl_args Additional args.
+		 *
+		 * @since unknown
+		 */
+		$tabs = apply_filters( 'pods_admin_setup_edit_tabs_' . $pod[ 'type' ] . '_' . $pod[ 'name' ], $tabs, $pod, $addtl_args );
+
+		/**
+		 * Add or modify tabs for any Pod in Pods editor of a specific post type.
+		 */
+		$tabs = apply_filters( 'pods_admin_setup_edit_tabs_' . $pod[ 'type' ], $tabs, $pod, $addtl_args );
+
+		/**
+		 * Add or modify tabs in Pods editor for all pods.
+		 */
+		$tabs = apply_filters( 'pods_admin_setup_edit_tabs', $tabs, $pod, $addtl_args );
 
         return $tabs;
     }
@@ -1083,8 +1000,8 @@ class PodsAdmin {
                     'depends-on' => array( 'show_in_menu' => true )
                 ),
                 'menu_icon' => array(
-                    'label' => __( 'Menu Icon URL', 'pods' ),
-                    'help' => __( 'help', 'pods' ),
+                    'label' => __( 'Menu Icon', 'pods' ),
+                    'help' => __( 'URL or Dashicon name for the menu icon. You may specify the path to the icon using one of the <a href="http://pods.io/docs/build/special-magic-tags/#site-tags" target="_blank">site tag</a> type <a href="http://pods.io/docs/build/special-magic-tags/" target="_blank">special magic tags</a>. For example, for a file in your theme directory, use "{@template-url}/path/to/image.png". You may also use the name of a <a href="http://melchoyce.github.io/dashicons/" target="_blank">Dashicon</a>. For example, to use the empty star icon, use "dashicons-star-empty".', 'pods' ),
                     'type' => 'text',
                     'default' => '',
                     'depends-on' => array( 'show_in_menu' => true )
@@ -1154,15 +1071,23 @@ class PodsAdmin {
                     'boolean_yes_label' => ''
                 ),
                 'has_archive' => array(
-                    'label' => __( 'Has Archive', 'pods' ),
-                    'help' => __( 'help', 'pods' ),
+                    'label' => __( 'Enable Archive Page', 'pods' ),
+                    'help' => __( 'If enabled, creates an archive page with list of of items in this custom post type. Functions like a category page for posts. Can be controlled with a template in your theme called "archive-{$post-type}.php".', 'pods' ),
                     'type' => 'boolean',
                     'default' => false,
+                    'dependency' => true,
                     'boolean_yes_label' => ''
+                ),
+                'has_archive_slug' => array(
+                    'label' => __( 'Archive Page Slug Override', 'pods' ),
+                    'help' => __( 'If archive page is enabled, you can override the slug used by WordPress, which defaults to the name of the post type.', 'pods' ),
+                    'type' => 'text',
+                    'default' => '',
+                    'depends-on' => array( 'has_archive' => true )
                 ),
                 'hierarchical' => array(
                     'label' => __( 'Hierarchical', 'pods' ),
-                    'help' => __( 'help', 'pods' ),
+                    'help' => __( 'Allows for parent/ child relationships between items, just like with Pages. Note: To edit relationships in the post editor, you must enable "Page Attributes" in the "Supports" section below.', 'pods' ),
                     'type' => 'boolean',
                     'default' => false,
                     'dependency' => true,
@@ -1184,7 +1109,7 @@ class PodsAdmin {
                 ),
                 'rewrite' => array(
                     'label' => __( 'Rewrite', 'pods' ),
-                    'help' => __( 'help', 'pods' ),
+                    'help' => __( 'Allows you to use pretty permalinks, if set in WordPress Settings->Reading. If not enbabled, your links will be in the form of "example.com/?pod_name=post_slug" regardless of your permalink settings.', 'pods' ),
                     'type' => 'boolean',
                     'default' => true,
                     'dependency' => true,
@@ -1192,7 +1117,7 @@ class PodsAdmin {
                 ),
                 'rewrite_custom_slug' => array(
                     'label' => __( 'Custom Rewrite Slug', 'pods' ),
-                    'help' => __( 'help', 'pods' ),
+                    'help' => __( 'Changes the first segment of the URL, which by default is the name of the Pod. For example, if your Pod is called "foo", if this field is left blank, your link will be "example.com/foo/post_slug", but if you were to enter "bar" your link will be "example.com/bar/post_slug".', 'pods' ),
                     'type' => 'text',
                     'default' => '',
                     'depends-on' => array( 'rewrite' => true )
@@ -1223,7 +1148,7 @@ class PodsAdmin {
                 ),
                 'query_var' => array(
                     'label' => __( 'Query Var', 'pods' ),
-                    'help' => __( 'help', 'pods' ),
+                    'help' => __( 'The Query Var is used in the URL and underneath the WordPress Rewrite API to tell WordPress what page or post type you are on. For a list of reserved Query Vars, read <a href="http://codex.wordpress.org/WordPress_Query_Vars">WordPress Query Vars</a> from the WordPress Codex.', 'pods' ),
                     'type' => 'boolean',
                     'default' => true,
                     'boolean_yes_label' => ''
@@ -1234,6 +1159,13 @@ class PodsAdmin {
                     'type' => 'boolean',
                     'default' => true,
                     'boolean_yes_label' => ''
+                ),
+                'default_status' => array(
+                    'label' => __( 'Default Status', 'pods' ),
+                    'help' => __( 'help', 'pods' ),
+                    'type' => 'pick',
+                    'pick_object' => 'post-status',
+                    'default' => apply_filters( 'pods_api_default_status_' . pods_var_raw( 'name', $pod, 'post_type', null, true ), 'draft', $pod )
                 )
             );
         }
@@ -1315,6 +1247,25 @@ class PodsAdmin {
                     'boolean_yes_label' => ''
                 );
             }
+
+			// Integration for Single Value Taxonomy UI
+			if ( function_exists( 'tax_single_value_meta_box' ) ) {
+                $options[ 'admin-ui' ][ 'single_value' ] = array(
+                    'label' => __( 'Single Value Taxonomy', 'pods' ),
+                    'help' => __( 'Use a drop-down for the input instead of the WordPress default', 'pods' ),
+                    'type' => 'boolean',
+                    'default' => false,
+                    'boolean_yes_label' => ''
+                );
+
+                $options[ 'admin-ui' ][ 'single_value_required' ] = array(
+                    'label' => __( 'Single Value Taxonomy - Required', 'pods' ),
+                    'help' => __( 'A term will be selected by default in the Post Editor, not optional', 'pods' ),
+                    'type' => 'boolean',
+                    'default' => false,
+                    'boolean_yes_label' => ''
+                );
+			}
 
             // @todo fill this in
             $options[ 'advanced' ] = array(
@@ -1495,7 +1446,25 @@ class PodsAdmin {
             );
         }
 
-        $options = apply_filters( 'pods_admin_setup_edit_options', $options, $pod );
+		/**
+		 * Add admin fields to the Pods editor for a specific Pod
+		 *
+		 * @params array $options The Options fields
+		 * @params object $pod Current Pods object
+		 *
+		 * @since unkown
+		 */
+		$options = apply_filters( 'pods_admin_setup_edit_options_' . $pod[ 'type' ] . '_' . $pod[ 'name' ], $options, $pod );
+
+		/**
+		 * Add admin fields to the Pods editor for any Pod of a specific content type.
+		 */
+		$options = apply_filters( 'pods_admin_setup_edit_options_' . $pod[ 'type' ], $options, $pod );
+
+		/**
+		 * Add admin fields to the Pods editor for all Pods
+		 */
+		$options = apply_filters( 'pods_admin_setup_edit_options', $options, $pod );
 
         return $options;
     }
@@ -1741,22 +1710,42 @@ class PodsAdmin {
      *
      * @return mixed
      */
-    public function admin_setup_duplicate ( &$obj ) {
+    public function admin_setup_duplicate ( $obj ) {
         $new_id = pods_api()->duplicate_pod( array( 'id' => $obj->id ) );
 
         if ( 0 < $new_id )
             pods_redirect( pods_var_update( array( 'action' => 'edit', 'id' => $new_id, 'do' => 'duplicate' ) ) );
     }
 
+	/**
+	 * Restrict Duplicate action to custom types, not extended
+	 *
+	 * @param bool $restricted
+	 * @param array $restrict
+	 * @param string $action
+	 * @param array $row
+	 * @param PodsUI $obj
+	 *
+	 * @since 2.3.10
+	 */
+	public function admin_setup_duplicate_restrict( $restricted, $restrict, $action, $row, $obj ) {
+
+		if ( in_array( $row[ 'real_type' ], array( 'user', 'media', 'comment' ) ) ) {
+			$restricted = true;
+		}
+
+		return $restricted;
+
+	}
+
     /**
      * Reset a pod
      *
-     * @param $id
      * @param $obj
      *
      * @return mixed
      */
-    public function admin_setup_reset ( &$obj, $id ) {
+    public function admin_setup_reset ( $obj, $id ) {
         $pod = pods_api()->load_pod( array( 'id' => $id ), false );
 
         if ( empty( $pod ) )
@@ -1769,6 +1758,27 @@ class PodsAdmin {
         $obj->manage();
     }
 
+	/**
+	 * Restrict Reset action from users and media
+	 *
+	 * @param bool $restricted
+	 * @param array $restrict
+	 * @param string $action
+	 * @param array $row
+	 * @param PodsUI $obj
+	 *
+	 * @since 2.3.10
+	 */
+	public function admin_setup_reset_restrict( $restricted, $restrict, $action, $row, $obj ) {
+
+		if ( in_array( $row[ 'real_type' ], array( 'user', 'media' ) ) ) {
+			$restricted = true;
+		}
+
+		return $restricted;
+
+	}
+
     /**
      * Delete a pod
      *
@@ -1777,7 +1787,7 @@ class PodsAdmin {
      *
      * @return mixed
      */
-    public function admin_setup_delete ( $id, &$obj ) {
+    public function admin_setup_delete ( $id, $obj ) {
         $pod = pods_api()->load_pod( array( 'id' => $id ), false );
 
         if ( empty( $pod ) )
@@ -1906,7 +1916,6 @@ class PodsAdmin {
             'data' => $components,
             'total' => count( $components ),
             'total_found' => count( $components ),
-            'icon' => PODS_URL . 'ui/images/icon32.png',
             'items' => 'Components',
             'item' => 'Component',
             'fields' => array(
@@ -1940,7 +1949,10 @@ class PodsAdmin {
             ),
             'actions_disabled' => array( 'duplicate', 'view', 'export', 'add', 'edit', 'delete' ),
             'actions_custom' => array(
-                'toggle' => array( 'callback' => array( $this, 'admin_components_toggle' ) )
+                'toggle' => array(
+	                'callback' => array( $this, 'admin_components_toggle' ),
+                    'nonce' => true
+                )
             ),
             'filters_enhanced' => true,
             'views' => array(
@@ -2029,7 +2041,7 @@ class PodsAdmin {
             return;
         }
 
-        if ( 1 == pods_var( 'toggled' ) ) {
+        if ( '1' == pods_v( 'toggled' ) ) {
             $toggle = PodsInit::$components->toggle( $component );
 
             if ( true === $toggle )
@@ -2209,8 +2221,7 @@ class PodsAdmin {
      */
     public function admin_ajax () {
         if ( false === headers_sent() ) {
-            if ( '' == session_id() )
-                @session_start();
+			pods_session_start();
 
             header( 'Content-Type: text/html; charset=' . get_bloginfo( 'charset' ) );
         }
@@ -2218,14 +2229,19 @@ class PodsAdmin {
         // Sanitize input
         $params = pods_unslash( (array) $_POST );
 
-        foreach ( $params as $key => $value ) {
-            if ( 'action' == $key )
-                continue;
+		foreach ( $params as $key => $value ) {
+			if ( 'action' == $key )
+				continue;
 
-            unset( $params[ $key ] );
+			// Fixup $_POST data
+			$_POST[ str_replace( '_podsfix_', '', $key ) ] = $_POST[ $key ];
 
-            $params[ str_replace( '_podsfix_', '', $key ) ] = $value;
-        }
+			// Fixup $params with unslashed data
+			$params[ str_replace( '_podsfix_', '', $key ) ] = $value;
+
+			// Unset the _podsfix_* keys
+			unset( $params[ $key ] );
+		}
 
         $params = (object) $params;
 
@@ -2271,6 +2287,8 @@ class PodsAdmin {
 
         $api = pods_api();
 
+	    $api->display_errors = false;
+
         if ( 'upgrade' == $method->name )
             $output = (string) pods_upgrade( $params->version )->ajax( $params );
         elseif ( 'migrate' == $method->name )
@@ -2311,4 +2329,75 @@ class PodsAdmin {
 
         die(); // KBAI!
     }
+
+	/**
+	 * Profiles the Pods configuration
+	 *
+	 * @param null|string|array $pod. Optional. Which Pod(s) to get configuration for. Can be a the name of one Pod, or an array of names of Pods, or null, which is the default, to profile all Pods.
+	 * @param bool $full_field_info Optional. If true all info about each field is returned. If false, which is the default only name and type, will be returned.
+	 *
+	 * @return array
+	 *
+	 * @since 3.0.0
+	 */
+	function configuration( $pod = null, $full_field_info = false ){
+		$api = pods_api();
+
+		if ( is_null( $pod ) ) {
+			$the_pods = $api->load_pods();
+		}
+		elseif( is_array( $pod ) ) {
+			foreach ( $pod as $p ) {
+				$the_pods[] = $api->load_pod( $p );
+			}
+		}
+		else {
+			$the_pods[] = $api->load_pod( $pod );
+		}
+
+		foreach( $the_pods as $pod ) {
+			$configuration[ $pod[ 'name' ] ] = array(
+				'name' 		=> $pod['name'],
+				'ID' 		=> $pod[ 'id' ],
+				'storage' 	=> $pod[ 'storage' ],
+				'fields' 	=> $pod[ 'fields' ],
+			);
+		}
+
+		if ( ! $full_field_info ) {
+			foreach ( $the_pods as $pod ) {
+				$fields = $configuration[ $pod['name'] ][ 'fields' ];
+				unset( $configuration[ $pod['name'] ][ 'fields' ] );
+				foreach ( $fields as $field ) {
+					$info = array (
+						'name' => $field[ 'name' ],
+						'type' => $field[ 'type' ],
+					);
+
+					if ( $info[ 'type' ]  === 'pick' ) {
+						$info[ 'pick_object' ] = $field[ 'pick_object' ];
+						if ( isset ( $field[ 'pick_val' ] ) && $field[ 'pick_val' ] !== '' ) {
+							$info[ 'pick_val' ] = $field[ 'pick_val' ];
+						}
+					}
+
+					if ( is_array( $info ) ) {
+						$configuration[ $pod[ 'name' ] ][ 'fields' ][ $field[ 'name' ] ] = $info;
+					}
+
+					unset( $info );
+
+				}
+
+			}
+
+		}
+
+		if ( is_array ( $configuration ) ) {
+			return $configuration;
+
+		}
+
+	}
+
 }

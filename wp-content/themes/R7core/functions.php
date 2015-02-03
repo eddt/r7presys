@@ -182,7 +182,6 @@ require get_template_directory() . '/includes/jetpack.php';
  */
 require get_template_directory() . '/includes/bootstrap-wp-navwalker.php';
 
-
 /**
  * Duplicate Slugs for Different Post Types Fix - Alisa Herr
  * http://cuberis.com/blog/wordpress-duplicate-slugs-for-different-post-types/

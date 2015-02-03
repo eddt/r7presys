@@ -34,7 +34,7 @@ class PodsField_File extends PodsField {
      * @var \PodsAPI
      * @since 2.3
      */
-    private static $api = false;
+    protected static $api = false;
 
     /**
      * Do things like register/enqueue scripts and stylesheets
@@ -74,12 +74,12 @@ class PodsField_File extends PodsField {
 
         $options = array(
             self::$type . '_format_type' => array(
-                'label' => __( 'File Type', 'pods' ),
+                'label' => __( 'Upload Limit', 'pods' ),
                 'default' => 'single',
                 'type' => 'pick',
                 'data' => array(
-                    'single' => __( 'Single Select', 'pods' ),
-                    'multi' => __( 'Multiple Select', 'pods' )
+                    'single' => __( 'Single File', 'pods' ),
+                    'multi' => __( 'Multiple Files', 'pods' )
                 ),
                 'dependency' => true
             ),
@@ -112,8 +112,13 @@ class PodsField_File extends PodsField {
                 'default' => 1,
                 'type' => 'boolean'
             ),
+            self::$type . '_linked' => array(
+                'label' => __( 'Link to File in editor', 'pods' ),
+                'default' => 0,
+                'type' => 'boolean'
+            ),
             self::$type . '_limit' => array(
-                'label' => __( 'File Limit', 'pods' ),
+                'label' => __( 'Max Number of Files', 'pods' ),
                 'depends-on' => array( self::$type . '_format_type' => 'multi' ),
                 'default' => 0,
                 'type' => 'number'
@@ -181,6 +186,7 @@ class PodsField_File extends PodsField {
         );
 
         if ( !pods_version_check( 'wp', '3.5' ) ) {
+            unset( $options[ self::$type . '_linked' ] );
             unset( $options[ self::$type . '_modal_title' ] );
             unset( $options[ self::$type . '_modal_add_button' ] );
 
@@ -230,7 +236,7 @@ class PodsField_File extends PodsField {
 
                 foreach ( $attachments as $v ) {
                     if ( !is_array( $v ) )
-                        $values[] = $v;
+                        $value[] = $v;
                     elseif ( isset( $v[ 'ID' ] ) )
                         $value[] = wp_get_attachment_url( $v[ 'ID' ] );
                 }
@@ -462,7 +468,7 @@ class PodsField_File extends PodsField {
      * @return string
      * @since 2.0
      */
-    public function markup ( $attributes, $limit = 1, $editable = true, $id = null, $icon = null, $name = null ) {
+    public function markup ( $attributes, $limit = 1, $editable = true, $id = null, $icon = null, $name = null, $linked = false, $link = null ) {
         // Preserve current file type
         $field_type = PodsForm::$field_type;
 
@@ -477,7 +483,11 @@ class PodsField_File extends PodsField {
         if ( empty( $name ) )
             $name = '{{name}}';
 
+        if ( empty( $link ) )
+            $link = '{{link}}';
+
         $editable = (boolean) $editable;
+        $linked = (boolean) $linked;
         ?>
     <li class="pods-file hidden" id="pods-file-<?php echo $id ?>">
         <?php echo PodsForm::field( $attributes[ 'name' ] . '[' . $id . '][id]', $id, 'hidden' ); ?>
@@ -500,7 +510,15 @@ class PodsField_File extends PodsField {
                 ?>
             </li>
 
-            <li class="pods-file-col pods-file-delete">Delete</li>
+            <li class="pods-file-col pods-file-delete"><a href="#delete">Delete</a></li>
+
+			<?php
+				if ( $linked ) {
+			?>
+            	<li class="pods-file-col pods-file-download"><a href="<?php echo $link; ?>" target="_blank">Download</a></li>
+			<?php
+				}
+			?>
         </ul>
     </li>
     <?php
@@ -515,10 +533,7 @@ class PodsField_File extends PodsField {
      * @since 2.3
      */
     public function admin_ajax_upload () {
-        if ( false === headers_sent() ) {
-            if ( '' == session_id() )
-                @session_start();
-        }
+		pods_session_start();
 
         // Sanitize input
         $params = pods_unslash( (array) $_POST );
@@ -586,6 +601,8 @@ class PodsField_File extends PodsField {
         );
 
         $api = pods_api();
+
+	    $api->display_errors = false;
 
         if ( !empty( $params->pod ) ) {
             $pod = $api->load_pod( array( 'id' => (int) $params->pod ) );
@@ -732,9 +749,11 @@ class PodsField_File extends PodsField {
                 }
             }
 
-            $custom_handler = apply_filters( 'pods_upload_handle', null, 'Filedata', $params->post_id, $params );
+            $custom_handler = apply_filters( 'pods_upload_handle', null, 'Filedata', $params->post_id, $params, $field );
 
             if ( null === $custom_handler ) {
+				$linked = pods_var( $field[ 'type' ] . '_linked', $field[ 'options' ], 0 );
+
                 $attachment_id = media_handle_upload( 'Filedata', $params->post_id );
 
                 if ( is_object( $attachment_id ) ) {
@@ -753,6 +772,12 @@ class PodsField_File extends PodsField {
 
                     $thumb = wp_get_attachment_image_src( $attachment[ 'ID' ], 'thumbnail', true );
                     $attachment[ 'thumbnail' ] = $thumb[ 0 ];
+
+					$attachment[ 'link' ] = '';
+
+					if ( $linked ) {
+                    	$attachment[ 'link' ] = wp_get_attachment_url( $attachment[ 'ID' ] );
+					}
 
                     $attachment = apply_filters( 'pods_upload_attachment', $attachment, $params->post_id );
 

@@ -107,15 +107,17 @@ class PodsField_Color extends PodsField {
         if ( is_array( $value ) )
             $value = implode( ' ', $value );
 
-        // Farbtastic for below 3.5
-        if ( pods_version_check( 'wp', '3.5', '>' ) )
-            $field_type = 'farbtastic';
         // WP Color Picker for 3.5+
-        else
+        if ( pods_version_check( 'wp', '3.5' ) ) {
             $field_type = 'color';
+        }
+        // Farbtastic for below 3.5
+        else {
+            $field_type = 'farbtastic';
+        }
 
         if ( isset( $options[ 'name' ] ) && false === PodsForm::permission( self::$type, $options[ 'name' ], $options, null, $pod, $id ) ) {
-            if ( pods_var( 'read_only', $options, false ) ) {
+            if ( pods_v( 'read_only', $options, false ) ) {
                 $options[ 'readonly' ] = true;
 
                 $field_type = 'text';
@@ -123,7 +125,7 @@ class PodsField_Color extends PodsField {
             else
                 return;
         }
-        elseif ( !pods_has_permissions( $options ) && pods_var( 'read_only', $options, false ) ) {
+        elseif ( !pods_has_permissions( $options ) && pods_v( 'read_only', $options, false ) ) {
             $options[ 'readonly' ] = true;
 
             $field_type = 'text';
@@ -157,7 +159,7 @@ class PodsField_Color extends PodsField {
             $color = str_replace( '#', '', $check );
 
             if ( 0 < strlen( $value ) && strlen( $check ) < 1 ) {
-                if ( 1 == pods_var( 'required', $options ) )
+                if ( 1 == pods_v( 'required', $options ) )
                     $errors[] = __( 'This field is required.', 'pods' );
                 else {
                     // @todo Ask for a specific format in error message

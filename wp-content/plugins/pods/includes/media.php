@@ -69,6 +69,20 @@ function pods_image ( $image, $size = 'thumbnail', $default = 0, $attributes = '
     $html = '';
 
     $id = pods_image_id_from_field( $image );
+
+    if ( 0 == $default  ) {
+        /**
+         * Filter for default value
+         *
+         * Use to set a fallback image to be used when the image passed to pods_image can not be found. Will only take effect if $default is not set.
+         *
+         * @since 2.3.19
+         *
+         * @param array|int|string $default Default image to show if image not found, can be field array, ID, or guid
+         */
+        $default = apply_filters( 'pods_image_default', $default );
+    }
+
     $default = pods_image_id_from_field( $default );
 
     if ( 0 < $id ) {
@@ -76,7 +90,7 @@ function pods_image ( $image, $size = 'thumbnail', $default = 0, $attributes = '
             $full = wp_get_attachment_image_src( $id, 'full' );
             $src = wp_get_attachment_image_src( $id, $size );
 
-            if ( !empty( $full ) && ( empty( $src ) || $full[ 0 ] != $src[ 0 ] ) )
+            if ( 'full' != $size && $full[ 0 ] == $src[ 0 ] )
                 pods_image_resize( $id, $size );
         }
 
@@ -88,7 +102,7 @@ function pods_image ( $image, $size = 'thumbnail', $default = 0, $attributes = '
             $full = wp_get_attachment_image_src( $default, 'full' );
             $src = wp_get_attachment_image_src( $default, $size );
 
-            if ( !empty( $full ) && ( empty( $src ) || $full[ 0 ] != $src[ 0 ] ) )
+            if ( 'full' != $size && $full[ 0 ] == $src[ 0 ] )
                 pods_image_resize( $default, $size );
         }
 
@@ -121,7 +135,7 @@ function pods_image_url ( $image, $size = 'thumbnail', $default = 0, $force = fa
             $full = wp_get_attachment_image_src( $id, 'full' );
             $src = wp_get_attachment_image_src( $id, $size );
 
-            if ( !empty( $full ) && ( empty( $src ) || $full[ 0 ] != $src[ 0 ] ) )
+            if ( 'full' != $size && $full[ 0 ] == $src[ 0 ] )
                 pods_image_resize( $id, $size );
         }
 
@@ -143,7 +157,7 @@ function pods_image_url ( $image, $size = 'thumbnail', $default = 0, $force = fa
             $full = wp_get_attachment_image_src( $default, 'full' );
             $src = wp_get_attachment_image_src( $default, $size );
 
-            if ( !empty( $full ) && ( empty( $src ) || $full[ 0 ] != $src[ 0 ] ) )
+            if ( 'full' != $size && $full[ 0 ] == $src[ 0 ] )
                 pods_image_resize( $default, $size );
         }
 
@@ -175,7 +189,13 @@ function pods_image_url ( $image, $size = 'thumbnail', $default = 0, $force = fa
  * @since 2.3
  */
 function pods_attachment_import ( $url, $post_parent = null, $featured = false ) {
-    $filename = substr( $url, ( strrpos( $url, '/' ) ) + 1 );
+	$filename = explode( '?', $url );
+	$filename = $filename[ 0 ];
+
+	$filename = explode( '#', $filename );
+	$filename = $filename[ 0 ];
+
+    $filename = substr( $filename, ( strrpos( $filename, '/' ) ) + 1 );
 
     $title = substr( $filename, 0, ( strrpos( $filename, '.' ) ) );
 
@@ -237,12 +257,27 @@ function pods_attachment_import ( $url, $post_parent = null, $featured = false )
 function pods_image_resize ( $attachment_id, $size ) {
     $size_data = array();
 
+	// Basic image size string
     if ( !is_array( $size ) ) {
         global $wp_image_sizes;
 
+		// Registered image size
         if ( isset( $wp_image_sizes[ $size ] ) && !empty( $wp_image_sizes[ $size ] ) )
             $size_data = $wp_image_sizes[ $size ];
+		// Custom on-the-fly image size
+		elseif ( preg_match( '/[0-9]+x[0-9]+/', $size ) || preg_match( '/[0-9]+x[0-9]+x[0-1]/', $size ) ) {
+			$size = explode( 'x', $size );
+
+            $size_data = array(
+                'width' => (int) $size[ 0 ],
+                'height' => (int) $size[ 1 ],
+                'crop' => (int) ( isset( $size[ 2 ] ) ? $size[ 2 ] : 1 ),
+            );
+
+        	$size = $size_data[ 'width' ] . 'x' . $size_data[ 'height' ];
+		}
     }
+	// Image size array
     elseif ( 2 <= count( $size ) ) {
         if ( isset( $size[ 'width' ] ) )
             $size_data = $size;
@@ -282,4 +317,74 @@ function pods_image_resize ( $attachment_id, $size ) {
     }
 
     return false;
+}
+
+/**
+ * Output an audio field as a video player.
+ *
+ * @uses wp_audio_shortcode()
+ *
+ * @since 2.5
+ *
+ * @param string|array   $url   Can be a URL of the source file, or a Pods audio field.
+ * @param bool|array     $args  Optional. Additional arguments to pass to wp_audio_shortcode
+ *
+ * @return string
+ */
+function pods_audio( $url, $args = false ) {
+
+	if ( is_array( $url ) ) {
+		if ( ! is_null( pods_v( 'ID', $url ) ) ) {
+			$id = pods_v( 'ID', $url );
+			$url = wp_get_attachment_url( $id );
+		}
+		else {
+			return;
+		}
+
+	}
+
+	$audio_args = array( 'src' => $url );
+
+	if ( is_array( $args ) ) {
+		$audio_args = array_merge(  $audio_args, $args );
+	}
+
+	return wp_audio_shortcode( $args );
+
+}
+
+/**
+ * Output a video field as a video player.
+ *
+ * @uses wp_video_shortcode()
+ *
+ * @since 2.5
+ *
+ * @param string|array   $url   Can be a URL of the source file, or a Pods video field.
+ * @param bool|array     $args  Optional. Additional arguments to pass to wp_video_shortcode()
+ *
+ * @return string
+ */
+function pods_video( $url, $args = false ) {
+
+	if ( is_array( $url ) ) {
+		if ( ! is_null( pods_v( 'ID', $url ) ) ) {
+			$id = pods_v( 'ID', $url );
+			$url = wp_get_attachment_url( $id );
+		}
+		else {
+			return;
+		}
+
+	}
+
+	$video_args = array( 'src' => $url );
+
+	if ( is_array( $args ) ) {
+		$video_args = array_merge( $video_args, $args );
+	}
+
+	return wp_video_shortcode( $video_args );
+
 }
