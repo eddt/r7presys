@@ -1,13 +1,8 @@
 /* Custom CSS Setup for Pods setup of Portal System for Rhino7*/
 
 /* Core Classes */
-.pods {
-
-}
-
-.pod-aap, .pod-all-a-p {
-    background-color: #FFFFFF;
-}
+.pods {  }
+.pod-aap, .pod-all-a-p {  }
 
 /* For Wildcard Page Templates */
 .pod-page-aap-w-w {}
@@ -21,37 +16,32 @@
 
 body {
     font-size: 16px;
-    font-family: 'Open Sans', sans-serif;
-}
-
-.sidebar {
+    font-family: Arial, 'Open Sans', sans-serif;
     background-color: #fff;
 }
 
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 { font-family: Arial, 'Open Sans', sans-serif; }
+
+a, a:hover { color:#B9571A; }
+
+body.pod-page-aap, body.pod-page-all-about-people {
+    background: url("./presentations/aap/aap_tp1_grfx_bg1.png") no-repeat scroll top right;
+}
+
+.sidebar { text-align:center; }
+
 .container {
-    /*background-color: #fff;*/
+
     padding: 0px 15px;
-    max-width:970px;
+    max-width:960px;
 }
-
+.page-header { border-bottom:1px solid #fff; }
 .page-title {
-    background-color: #252525;
     padding: 10px;
-    text-align: center;
-    font-size: 32px; /* 1.5em */
+    text-align: left;
+    font-size: 55px !important; /* 1.5em */
     font-weight: bold;
-    color: #fff;
-}
-
-.page-header {
-    border-bottom: 0px solid #fff;
-    margin: 0px;
-    padding-bottom: 10px;
-    background-color: #FFF;
-}
-
-.page-header h1 {
-    font-size: 1.7em;
+    color: #444;
 }
 
 .site-header {
@@ -70,7 +60,9 @@ body {
 .site-header-inner {
     height: 148px;
 }
-
+.main-content {
+    margin-top:40px;
+}
 .main-content-inner {
     padding-bottom: 0;
 }
@@ -78,14 +70,28 @@ body {
 .hentry {
     margin: 0;
 }
+.circular {
+    border-radius: 100%;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+}
+.post-image {
+    /*position: absolute;
+    top: 0;
+    right: 0;*/
 
-.type-sgr {
-    background-color: #E2E2E2;
+}
+.post-header {
+    /*position: absolute;
+    top: 1px;*/
+}
+
+.type-aap {
+    /*background-color: #E2E2E2;*/
 }
 
 .entry-content, .entry-meta {
     padding:10px;
-    background-color: #E2E2E2;
 }
 
 .format-aside .entry-content, .format-aside .entry-meta {
@@ -93,18 +99,51 @@ body {
     padding: 10px;
 }
 
-/* Other - new CSS entities specific to template, not found in core style.css file */
-
-.aap-header, .aap-nav {
-    background-color: #fff;
+.entry-pane ul, .entry-content ul  {
+    list-style-type: none;
+    position: relative;
+    margin-left: 1em;
+    padding-left: 0;
+}
+.entry-pane ul > li:before, .entry-content ul > li:before {
+    content: '\25CF';
+    color: #b9571a;
+    position: absolute;
+    left: -0.8em;
+    margin-right: 5px;
+    line-height:1.2em;
 }
 
+/* Other - new CSS entities specific to template, not found in core style.css file */
+
+.sub-title, .entry-content h2, .entry-pane h2  { color:#B9571A; font-weight:bold; }
+
+.header-image {
+    float:right;
+    width:570px;
+    height:284px;
+    overflow:hidden;
+    position:absolute;
+    top:38px;
+    right:0;
+}
+
+.header-image-frame {
+    background: url("./presentations/aap/aap_tp1_grfx_feat_frame.png") no-repeat scroll top right;
+    width:570px;
+    height:286px;
+    float:right;
+    position:absolute;
+    top:38px;
+    right:0;
+}
+.aap-slides { margin-top:20px; }
 .aap-content {
-    /*background-color: #E2E2E2;*/
+
 }
 
 .aap-footer {
-    background-color:#252525;
+    background-color:#7C766F;
     min-height: 190px;
 }
 
@@ -132,6 +171,7 @@ body {
     z-index: 1000;
 
 }
+#pre-content-spacer { margin-top:160px; }
 
 #menu-aap {
     /*border: 1px solid #6D2B80;*/
@@ -152,31 +192,35 @@ ul.sidebar-nav { list-style-type:none; position:relative; padding-left:0; font-s
 ul.sidebar-nav li { border-top:1px solid #E1E1E1; min-width:200px; }
 ul.sidebar-nav li a { display: block; width:100%; color:#888; padding:10px 20px; }
 ul.sidebar-nav li.hover a { color:#FFF; background-color:#888; }
-ul.sidebar-nav li.current-menu-item a { color:#FFF; background-color:#888; }
+ul.sidebar-nav li.current-menu-item a { color:#FFF; background-color:#B9571A; }
 ul.sidebar-nav li.current-menu-item ul.sub-menu li.menu-item a { color:#888; background-color:#FFF; }
 /*container for side navigation*/
 .sidebar-navmenu { text-align:left; }
 .sidebar-navmenu-button { text-align:right; }
 #menu-aap { /*margin: 2em 0 0 2em; width: 20em;*/ }
 #menu-aap > li { /*padding-bottom: 3px; padding-left:15px;*/ }
-#menu-aap  li > span { color: #F12E15; cursor:pointer; float: left; padding: 10px 0px 10px 16px; }
-#menu-aap  li > span:before { content: '\25BC'; padding-right: 4px; font-weight: bold; }
-#menu-aap  li >span.active:before { content: '\25B2'; padding-right: 4px; font-weight: bold; }
+#menu-aap li > span { color: #B9571A; cursor:pointer; float: left; padding: 10px 0px 10px 16px; }
+
+li.current-menu-item > span { color:#fff !important; }
+li.current-menu-item a { color: #fff; }
+
+#menu-aap li > span:before { content: '\25C0'; padding-right: 4px; }
+#menu-aap li >span.active:before { content: '\25B6'; padding-right: 4px; }
 #menu-aap li ul { display: none; }
-#menu-all-a-p > li { /*padding-bottom: 3px; padding-left:15px;*/ }
-#menu-all-a-p  li > span { color: #F12E15; cursor:pointer; float: left; padding: 10px 0px 10px 16px; }
-#menu-all-a-p  li > span:before { content: '\25BC'; padding-right: 4px; font-weight: bold; }
-#menu-all-a-p  li >span.active:before { content: '\25B2'; padding-right: 4px; font-weight: bold; }
-#menu-all-a-p li ul { display: none; }
-li.current-menu-item a { background-color: #888; color: #fff; }
-.sub-menu { padding-left:15px; }
+#menu-all_a_p > li { /*padding-bottom: 3px; padding-left:15px;*/ }
+#menu-all_a_p li > span { color: #B9571A; cursor:pointer; float: left; padding: 10px 0px 10px 16px; }
+#menu-all_a_p li > span:before { content: '\25C0'; padding-right: 4px; }
+#menu-all_a_p li >span.active:before { content: '\25B6'; padding-right: 4px; }
+#menu-all_a_p li ul { display: none; }
+
+.sub-menu { padding-left:25px; }
 
 #content {
     /*margin: 0px 50px;*/
 }
 
 .entry-pane {
-    background-color: #E2E2E2;
+
     padding: 10px;
     display: inline-block;
 }
@@ -197,44 +241,39 @@ li.current-menu-item a { background-color: #888; color: #fff; }
     background-color: #919191;
     min-height: 38px;
     padding: 0px 20px;
-
+    position:relative;
+    z-index:100;
 }
 
 /*Media Query Overrides*/
-
 @media (min-width: 768px) {
     /*.portal-nav { display:none; }*/
     .sidebar-navmenu-button { visibility: hidden; }
     }
 
 @media (min-width: 992px) {
-    /*.portal-nav {
-        display: inline-block;
-        text-align: center;
-        float: right;
-        margin: 30px 0px 0px 0px;
-    }*/
 
 }
 
 @media (min-width: 1200px) {
-    /*.portal-nav {
-        display: inline-block;
-        text-align: center;
-        float: right;
-        margin: 30px 0px 0px 0px;
-    }*/
+
 }
 @media (max-width: 767px) {
+    body.pod-page-aap, body.pod-page-all-about-people { background: #fff; }
     .page-header h1 {font-size: 1.2em;}
+    .header-image { display:none; }
+    .header-image-frame { display:none; }
     .sidebar-vertical { display:none; }
     .sidebar-navmenu-button { visibility: visible; }
+    #pre-content-spacer { display:none; }
 }
 @media (max-width: 990px) {
     .side-menu { width: 50%; }
     ul.ddside ul {width: 80%; left: 70%; -moz-box-sizing: inherit; padding: 2px 4px; }
     /*.sidebar { text-align:center; }*/
-
+}
+@media (max-width: 1200px) {
+    .post-header { padding-top: 50px; }
 }
 
 /*Bootstrap Overrides*/

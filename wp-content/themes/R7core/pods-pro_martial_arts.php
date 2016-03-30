@@ -188,7 +188,7 @@
                     <div class="pma-footer-box col-12 col-sm-5 col-lg-4">
                         <?php echo '<img src="'. get_template_directory_uri() .'/presentations/pma/pma_tp1_grfx_logo_foot.png" >' ;?><br />
                         Rhino7 Franchise Development Corporation, Inc.<br />
-                        431 Keisler Dr<br />
+                        431 Keisler Dr.<br />
                         Ste. 201<br />
                         Cary, NC 27518<br />
                         <!--315 S. Salem St.<br />

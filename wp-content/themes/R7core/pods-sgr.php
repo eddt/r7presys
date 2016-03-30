@@ -182,7 +182,7 @@
                             <?php echo '<img src="'. get_template_directory_uri() .'/presentations/sgr/sgr_tp1_grfx_logo_foot.png" >' ;?><br />
                             <div style="padding-left:30px;">
                                 Rhino7 Franchise Development Corporation, Inc.<br />
-                                431 Keisler Dr<br />
+                                431 Keisler Dr.<br />
                                 Ste. 201<br />
                                 Cary, NC 27518<br />
                                 <!--315 S. Salem St.<br />

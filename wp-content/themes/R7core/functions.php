@@ -183,6 +183,38 @@ require get_template_directory() . '/includes/jetpack.php';
 require get_template_directory() . '/includes/bootstrap-wp-navwalker.php';
 
 /**
+ * Add Categories to attachments.
+ */
+function wptp_add_categories_to_attachments() {
+	register_taxonomy_for_object_type( 'category', 'attachment' );
+}
+add_action( 'init' , 'wptp_add_categories_to_attachments' );
+
+/**
+ * Add Tags to attachments.
+ */
+function wptp_add_tags_to_attachments() {
+	register_taxonomy_for_object_type( 'post_tag', 'attachment' );
+}
+add_action( 'init' , 'wptp_add_tags_to_attachments' );
+
+
+add_filter('manage_media_columns', 'posts_columns_attachment_cat', 1);
+add_action('manage_media_custom_column', 'posts_custom_columns_attachment_cat', 1, 2);
+function posts_columns_attachment_cat($defaults){
+	$defaults['wps_post_attachments_id'] = __('ID');
+	return $defaults;
+}
+function posts_custom_columns_attachment_cat($column_name, $id){
+	if($column_name === 'wps_post_attachments_id'){
+		echo $id;
+	}
+}
+
+
+
+
+/**
  * Duplicate Slugs for Different Post Types Fix - Alisa Herr
  * http://cuberis.com/blog/wordpress-duplicate-slugs-for-different-post-types/
  * versus

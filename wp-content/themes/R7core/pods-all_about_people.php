@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: AAP Template
+ * Template Name: All About People Template
  *
  * This template is a variant "child" template. Based on "index", it is SOLELY for use by the "aap" Portal. It does NOT
  * use the R7 Core Header and Footer, using instead its own embedded versions, and the "Loop" has been disabled and
@@ -35,14 +35,14 @@
         </div>
     </div>
 </header><!-- #masthead -->
-<?php if ( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'aap') : ?>
+<?php if ( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'all-about-people') : ?>
     <div class="aap-header"></div>
 <?php else : ?>
     <div class="header-image"></div>
     <div class="header-image-frame"></div>
 <?php endif; ?>
 
-<?php if( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'aap') : ?>
+<?php if( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'all-about-people') : ?>
     <nav class="site-navigation"></nav><!-- .site-navigation -->
     <div class="container aap-slides">
         <div class="carousel slide" id="myCarousel"><!-- BEGIN Slideshow Carousel -->
@@ -73,7 +73,7 @@
         <div class="row">
 
             <div class="sidebar col-12 col-sm-5 col-lg-4">
-                <a href="<?php echo site_url(); ?>/aap">
+                <a href="<?php echo site_url(); ?>/all-about-people">
                     <?php echo '<img src="'. get_template_directory_uri() .'/presentations/aap/aap_tp1_grfx_logo.png" >' ;?>
                 </a>
                 <div class="sidebar-navmenu">
@@ -83,7 +83,7 @@
 
                     <?php wp_nav_menu(
                         array(
-                            'menu' => 'aap',
+                            'menu' => 'all_a_p',
                             'theme_location' => 'primary',
                             'container_class' => 'sidebar-vertical',
                             'menu_class' => 'tree-sidebar-nav sidebar-nav',
@@ -131,7 +131,7 @@
             </div><!-- close .sidebar -->
             <div class="main-content-inner col-12 col-sm-7 col-lg-8">
                 <div id="primary" class="content-area">
-            <?php if ( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) != 'aap') : ?>
+            <?php if ( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) != 'all-about-people') : ?>
                 <div id="pre-content-spacer"></div>
             <?php endif; ?>
 
@@ -142,7 +142,7 @@
                          * for all custom types to work as long as a content-[type].php file exists, or it
                          * will default to content.php
                          */ ?>
-                        <?php if ( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'aap') : ?>
+                        <?php if ( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'all-about-people') : ?>
                             <?php pods_content(); ?>
                         <?php else : ?>
                             <?php /* The loop */ ?>
