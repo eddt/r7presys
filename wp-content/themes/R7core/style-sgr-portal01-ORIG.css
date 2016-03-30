@@ -1,0 +1,342 @@
+/* Custom CSS Setup for Pods setup of Portal System for Rhino7*/
+
+/* Core Classes */
+.pods {
+
+}
+
+.pod-sgr, .pod-storm-guard {
+    background-color: #FFFFFF;
+}
+
+/* For Wildcard Page Templates */
+.pod-page-sgr-w-w {}
+.pod-page-sgr-w {}
+.pod-page-sgr {}
+.pod-page-storm-guard-w-w {}
+.pod-page-storm-guard-w {}
+.pod-page-storm-guard {}
+
+/* Overrides - Will replace existing CSS entities from core style.css file */
+
+body {
+    font-size: 16px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.sidebar {
+    background-color: #fff;
+}
+
+.container {
+    /*background-color: #fff;*/
+    padding: 0px 15px;
+    max-width:970px;
+}
+
+.page-title {
+    background-color: #252525;
+    padding: 10px;
+    text-align: center;
+    font-size: 32px; /* 1.5em */
+    font-weight: bold;
+    color: #fff;
+}
+
+.page-header {
+    border-bottom: 0px solid #fff;
+    margin: 0px;
+    padding-bottom: 10px;
+    background-color: #FFF;
+}
+
+.page-header h1 {
+    font-size: 1.7em;
+}
+
+.site-header {
+    /*margin-top:46px;*/
+}
+
+.site-branding {
+    display:inline-block;
+    margin-top: 30px;
+    text-align:center;
+}
+
+.site-navigation-inner {
+    /*display: none;*/
+}
+.site-header-inner {
+    height: 148px;
+}
+
+.main-content-inner {
+    padding-bottom: 0;
+}
+
+.hentry {
+    margin: 0;
+}
+
+.type-sgr {
+    background-color: #E2E2E2;
+}
+
+.entry-content, .entry-meta {
+    padding:10px;
+    background-color: #E2E2E2;
+}
+
+.format-aside .entry-content, .format-aside .entry-meta {
+    background-color: #FFF;
+    padding: 10px;
+}
+
+/* Other - new CSS entities specific to template, not found in core style.css file */
+
+.sgr-header, .sgr-nav {
+    background-color: #fff;
+}
+
+.sgr-content {
+    /*background-color: #E2E2E2;*/
+}
+
+.sgr-footer {
+    background-color:#252525;
+    min-height: 190px;
+}
+
+.sgr-footer-box {
+    font-size:14px;
+    color:#FFF;
+    line-height:1.1;
+    margin-top:15px;
+    display:inline-block;
+    height: 120px;
+    vertical-align:top;
+}
+
+/*container for header navigation*/
+.head-menu {
+    position: absolute;
+    z-index: 1000;
+    right: 30px;
+    top: 50px;
+}
+
+/*container for side navigation*/
+.side-menu {
+    position: relative;
+    z-index: 1000;
+
+}
+
+#menu-sgr {
+    /*border: 1px solid #6D2B80;*/
+}
+
+/* CUSTOM PORTAL MENU CSS - Header Menu */
+/* LEVEL ONE */
+ul.dropdown { position: relative; list-style-type: none; font-size:13px; }
+ul.dropdown li { margin-top:-1px; zoom: 1; background: #fff; list-style-type: none; }
+ul.dropdown li a { display: block; padding: 4px 20px; border: 1px solid #FFF; color:#000; }
+ul.dropdown a:hover { color:#fff; }
+ul.dropdown a:active { color:#f00; }
+ul.dropdown li.hover { background:#F12E15; color:#fff; position: relative; }
+ul.dropdown li:hover { background:#F12E15; color:#fff; position: relative; }
+ul.dropdown li.hover a { color:#fff; }
+/* LEVEL TWO */
+ul.dropdown ul { /*width: 240px;*/ visibility: hidden; position: absolute; right: 60%; top: 10px; }
+ul.dropdown ul li { margin-top:-1px; background: #F12E15; border: 1px solid #F12E15; color:#000; float: none; }
+ul.dropdown ul li a { width: 100%; display: inline-block; color:#000; }
+ul.dropdown ul li.hover { background:#F12E15; color:#fff; position: relative; }
+/* LEVEL THREE */
+ul.dropdown ul ul { right: 60%; top: 10px; }
+ul.dropdown li:hover > ul { visibility: visible; }
+
+ul.submenu { padding: 4px 20px;  }
+
+#content {
+    /*margin: 0px 50px;*/
+}
+
+.entry-pane {
+    background-color: #E2E2E2;
+    padding: 10px;
+    display: inline-block;
+}
+
+.portal-nav {
+    display: inline-block;
+    text-align: right;
+    margin: 30px 0px 0px 0px;
+}
+
+.portal-ban {
+    display: inline-block;
+    height: auto;
+    max-width: 100%;
+}
+
+#topbar {
+    background-color: #919191;
+    min-height: 38px;
+    padding: 0px 20px;
+
+}
+
+/*Media Query Overrides*/
+
+@media (min-width: 768px) {
+    /*.portal-nav { display:none; }*/
+}
+
+@media (min-width: 992px) {
+    /*.portal-nav {
+        display: inline-block;
+        text-align: center;
+        float: right;
+        margin: 30px 0px 0px 0px;
+    }*/
+
+}
+
+@media (min-width: 1200px) {
+    /*.portal-nav {
+        display: inline-block;
+        text-align: center;
+        float: right;
+        margin: 30px 0px 0px 0px;
+    }*/
+}
+@media (max-width: 767px) {
+    .page-header h1 {font-size: 1.2em;}
+}
+@media (max-width: 990px) {
+    .side-menu { width: 50%; }
+    ul.ddside ul {width: 80%; left: 70%; -moz-box-sizing: inherit; padding: 2px 4px; }
+    /*.sidebar { text-align:center; }*/
+
+}
+
+/*Bootstrap Overrides*/
+#myCarousel {
+
+}
+
+.carousel {
+    line-height: 1;
+    /*margin-bottom: 20px;*/
+    position: relative;
+}
+.carousel-inner {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+.carousel-inner > .item {
+    display: none;
+    position: relative;
+    transition: left 0.6s ease-in-out 0s;
+}
+.carousel-inner > .item > img, .carousel-inner > .item > a > img {
+    display: block;
+    line-height: 1;
+}
+.carousel-inner > .active, .carousel-inner > .next, .carousel-inner > .prev {
+    display: block;
+}
+.carousel-inner > .active {
+    left: 0;
+}
+.carousel-inner > .next, .carousel-inner > .prev {
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+.carousel-inner > .next {
+    left: 100%;
+}
+.carousel-inner > .prev {
+    left: -100%;
+}
+.carousel-inner > .next.left, .carousel-inner > .prev.right {
+    left: 0;
+}
+.carousel-inner > .active.left {
+    left: -100%;
+}
+.carousel-inner > .active.right {
+    left: 100%;
+}
+.carousel-control {
+    background: none repeat scroll 0 0 #222222;
+    border: 3px solid #FFFFFF;
+    border-radius: 23px 23px 23px 23px;
+    color: #FFFFFF;
+    font-size: 40px;
+    font-weight: 100;
+    height: 40px;
+    left: 15px;
+    line-height: 26px;
+    margin-top: -20px;
+    opacity: 0.5;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    width: 40px;
+}
+.carousel-control.right {
+    background-color:#000;
+    left: auto;
+    right: 15px;
+}
+.carousel-control.left {
+    background-color:#000;
+}
+.carousel-control:hover, .carousel-control:focus {
+    color: #FFFFFF;
+    opacity: 0.9;
+    text-decoration: none;
+}
+.open > .dropdown-menu {
+    display: block;
+}
+
+
+
+
+
+.deep-top {
+    background-clip: padding-box;
+    background-color: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.176);
+    display: none;
+    float: left;
+    left: 50%;/*40%;*/
+    list-style: none outside none;
+    margin: 2px 0 0;
+    min-width: 160px;
+    padding: 1px 0;
+    position: absolute;
+    top: 10px; /*70%;*/
+    z-index: 1000;
+}
+
+
+
+
+
+/* Additional Features */
+.size-auto,
+.size-full,
+.size-large,
+.size-medium,
+.size-thumbnail {
+    max-width: 100%;
+    height: auto;
+}
