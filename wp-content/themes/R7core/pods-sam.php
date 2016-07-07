@@ -149,7 +149,7 @@
             <?php //if( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) != 'sam') : ?>
             <div class="sidebar col-12 col-sm-4 col-lg-4">
                     <a href="<?php echo site_url(); ?>/sam">
-                        <?php echo '<img src="'. get_template_directory_uri() .'/presentations/sam/sam_tp1_grfx_logo.png" >' ;?>
+                        <?php echo '<img src="'. get_template_directory_uri() .'/presentations/sam/sam_tp1_grfx_logo.jpg" >' ;?>
                     </a>
                     <div class="sidebar-navmenu">
                         <div class="sidebar-navmenu-button">
