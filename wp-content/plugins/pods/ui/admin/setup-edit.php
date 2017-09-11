@@ -141,8 +141,8 @@ foreach ( $field_tab_options[ 'additional-field' ] as $field_type => $field_type
 <div class="pods-submittable-fields">
     <input type="hidden" name="action" value="pods_admin" />
     <input type="hidden" name="method" value="save_pod" />
-    <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'pods-save_pod' ); ?>" />
-    <input type="hidden" name="id" value="<?php echo (int) $pod[ 'id' ]; ?>" />
+    <input type="hidden" name="_wpnonce" value="<?php echo esc_attr( wp_create_nonce( 'pods-save_pod' ) ); ?>" />
+    <input type="hidden" name="id" value="<?php echo esc_attr( (int) $pod[ 'id' ] ); ?>" />
     <input type="hidden" name="old_name" value="<?php echo esc_attr( $pod[ 'name' ] ); ?>" />
 
     <h2>
@@ -201,7 +201,7 @@ foreach ( $field_tab_options[ 'additional-field' ] as $field_type => $field_type
                     if ( $tab == $default )
                         $class = ' nav-tab-active';
             ?>
-                <a href="#pods-<?php echo $tab; ?>" class="nav-tab<?php echo $class; ?> pods-nav-tab-link">
+                <a href="#pods-<?php echo esc_attr( $tab ); ?>" class="nav-tab<?php echo esc_attr( $class ); ?> pods-nav-tab-link">
                     <?php echo $label; ?>
                 </a>
             <?php
@@ -229,7 +229,7 @@ if ( isset( $_GET[ 'do' ] ) ) {
 ?>
 
 <div id="poststuff">
-<img src="<?php echo PODS_URL; ?>ui/images/pods-logo-notext-rgb-transparent.png" class="pods-leaf-watermark-right" />
+<img src="<?php echo esc_url( PODS_URL ); ?>ui/images/pods-logo-notext-rgb-transparent.png" class="pods-leaf-watermark-right" />
 <!-- /inner-sidebar -->
 <div id="post-body" class="meta-box-holder columns-2">
 <div id="post-body-content" class="pods-nav-tab-group">
@@ -305,7 +305,7 @@ if ( isset( $_GET[ 'do' ] ) ) {
                     $pods_i++;
                 }
             ?>
-            <tr class="no-items<?php echo ( 1 < $pods_i ? ' hidden' : '' ); ?>">
+            <tr class="no-items<?php echo esc_attr( 1 < $pods_i ? ' hidden' : '' ); ?>">
                 <td class="colspanchange" colspan="4">No fields have been added yet</td>
             </tr>
         </tbody>
@@ -378,7 +378,46 @@ if ( strlen( pods_var( 'object', $pod ) ) < 1 && 'settings' != pods_var( 'type',
         <?php echo PodsForm::label( 'label_not_found', __( 'Not Found', 'pods' ), __( 'help', 'pods' ) ); ?>
         <?php echo PodsForm::field( 'label_not_found', pods_var_raw( 'label_not_found', $pod ), 'text' ); ?>
     </div>
-
+    <div class="pods-field-option">
+        <?php echo PodsForm::label( 'label_feature_image', __( 'Featured Image', 'pods' ), __( 'help', 'pods' ) ); ?>
+        <?php echo PodsForm::field( 'label_feature_image', pods_var_raw( 'label_feature_image', $pod ), 'text' ); ?>
+    </div>
+    <div class="pods-field-option">
+        <?php echo PodsForm::label( 'label_set_featured_image', __( 'Set featured image', 'pods' ), __( 'help', 'pods' ) ); ?>
+        <?php echo PodsForm::field( 'label_set_featured_image', pods_var_raw( 'label_set_featured_image', $pod ), 'text' ); ?>
+    </div>
+    <div class="pods-field-option">
+        <?php echo PodsForm::label( 'label_remove_featured_image', __( 'Remove featured image', 'pods' ), __( 'help', 'pods' ) ); ?>
+        <?php echo PodsForm::field( 'label_remove_featured_image', pods_var_raw( 'label_remove_featured_image', $pod ), 'text' ); ?>
+    </div>
+    <div class="pods-field-option">
+        <?php echo PodsForm::label( 'label_use_featured_image', __( 'Use as featured image', 'pods' ), __( 'help', 'pods' ) ); ?>
+        <?php echo PodsForm::field( 'label_use_featured_image', pods_var_raw( 'label_use_featured_image', $pod ), 'text' ); ?>
+    </div>
+    <div class="pods-field-option">
+        <?php echo PodsForm::label( 'label_archives', __( '<span class="pods-slugged" data-sluggable="label_singular">Item</span> Archives', 'pods' ), __( 'help', 'pods' ) ); ?>
+        <?php echo PodsForm::field( 'label_archives', pods_var_raw( 'label_archives', $pod ), 'text' ); ?>
+    </div>
+    <div class="pods-field-option">
+        <?php echo PodsForm::label( 'label_insert_into_item', __( 'Insert into <span class="pods-slugged" data-sluggable="label_singular">Item</span>', 'pods' ), __( 'help', 'pods' ) ); ?>
+        <?php echo PodsForm::field( 'label_insert_into_item', pods_var_raw( 'label_insert_into_item', $pod ), 'text' ); ?>
+    </div>
+    <div class="pods-field-option">
+        <?php echo PodsForm::label( 'label_uploaded_to_this_item', __( 'Uploaded to this <span class="pods-slugged" data-sluggable="label_singular">Item</span>', 'pods' ), __( 'help', 'pods' ) ); ?>
+        <?php echo PodsForm::field( 'label_uploaded_to_this_item', pods_var_raw( 'label_uploaded_to_this_item', $pod ), 'text' ); ?>
+    </div>
+    <div class="pods-field-option">
+        <?php echo PodsForm::label( 'label_filter_items_list', __( 'Filter <span class="pods-slugged" data-sluggable="label">Items</span> lists', 'pods' ), __( 'help', 'pods' ) ); ?>
+        <?php echo PodsForm::field( 'label_filter_items_list', pods_var_raw( 'label_filter_items_list', $pod ), 'text' ); ?>
+    </div>
+    <div class="pods-field-option">
+        <?php echo PodsForm::label( 'label_items_list_navigation', __( '<span class="pods-slugged" data-sluggable="label">Items</span> list navigation', 'pods' ), __( 'help', 'pods' ) ); ?>
+        <?php echo PodsForm::field( 'label_items_list_navigation', pods_var_raw( 'label_items_list_navigation', $pod ), 'text' ); ?>
+    </div>
+    <div class="pods-field-option">
+        <?php echo PodsForm::label( 'label_items_list', __( '<span class="pods-slugged" data-sluggable="label">Items</span> list', 'pods' ), __( 'help', 'pods' ) ); ?>
+        <?php echo PodsForm::field( 'label_items_list', pods_var_raw( 'label_items_list', $pod ), 'text' ); ?>
+    </div>
     <?php
     if ( in_array( pods_var( 'type', $pod ), array( 'post_type', 'pod' ) ) ) {
         ?>
@@ -568,63 +607,13 @@ if ( 'post_type' == pods_var( 'type', $pod ) && strlen( pods_var( 'object', $pod
     </div>
     <?php
 }
-elseif ( 'taxonomy' == pods_var( 'type', $pod ) && strlen( pods_var( 'object', $pod ) ) < 1 ) {
-    ?>
-    <div class="pods-field-option">
-        <?php echo PodsForm::label( 'public', __( 'Public', 'pods' ), __( 'help', 'pods' ) ); ?>
-        <?php echo PodsForm::field( 'public', pods_var_raw( 'public', $pod, true ), 'boolean', array( 'boolean_yes_label' => '' ) ); ?>
-    </div>
-    <div class="pods-field-option">
-        <?php echo PodsForm::label( 'hierarchical', __( 'Hierarchical', 'pods' ), __( 'help', 'pods' ) ); ?>
-        <?php echo PodsForm::field( 'hierarchical', pods_var_raw( 'hierarchical', $pod, false ), 'boolean', array( 'dependency' => true, 'boolean_yes_label' => '' ) ); ?>
-    </div>
-    <div class="pods-field-option-container pods-depends-on pods-depends-on-hierarchical">
-        <div class="pods-field-option">
-            <?php echo PodsForm::label( 'label_parent_item_colon', __( '<strong>Label: </strong> Parent <span class="pods-slugged" data-sluggable="label_singular">Item</span>', 'pods' ), __( 'help', 'pods' ) ); ?>
-            <?php echo PodsForm::field( 'label_parent_item_colon', pods_var_raw( 'label_parent_item_colon', $pod ), 'text' ); ?>
-        </div>
-        <div class="pods-field-option">
-            <?php echo PodsForm::label( 'label_parent', __( '<strong>Label: </strong> Parent', 'pods' ), __( 'help', 'pods' ) ); ?>
-            <?php echo PodsForm::field( 'label_parent', pods_var_raw( 'label_parent', $pod ), 'text' ); ?>
-        </div>
-    </div>
-    <div class="pods-field-option">
-        <?php echo PodsForm::label( 'rewrite', __( 'Rewrite', 'pods' ), __( 'help', 'pods' ) ); ?>
-        <?php echo PodsForm::field( 'rewrite', pods_var_raw( 'rewrite', $pod, true ), 'boolean', array( 'dependency' => true, 'boolean_yes_label' => '' ) ); ?>
-    </div>
-    <div class="pods-field-option-container pods-depends-on pods-depends-on-rewrite">
-        <div class="pods-field-option">
-            <?php echo PodsForm::label( 'rewrite_custom_slug', __( 'Custom Rewrite Slug', 'pods' ), __( 'help', 'pods' ) ); ?>
-            <?php echo PodsForm::field( 'rewrite_custom_slug', pods_var_raw( 'rewrite_custom_slug', $pod ), 'text' ); ?>
-        </div>
-        <div class="pods-field-option">
-            <?php echo PodsForm::label( 'rewrite_with_front', __( 'Allow Front Prepend', 'pods' ), __( 'Allows permalinks to be prepended with front base (example: if your permalink structure is /blog/, then your links will be: Checked->/news/, Unchecked->/blog/news/)', 'pods' ) ); ?>
-            <?php echo PodsForm::field( 'rewrite_with_front', pods_var_raw( 'rewrite_with_front', $pod, true ), 'boolean', array( 'boolean_yes_label' => '' ) ); ?>
-        </div>
-        <div class="pods-field-option">
-            <?php echo PodsForm::label( 'rewrite_hierarchical', __( 'Hierarchical Permalinks', 'pods' ), __( 'help', 'pods' ) ); ?>
-            <?php echo PodsForm::field( 'rewrite_hierarchical', pods_var_raw( 'rewrite_hierarchical', $pod, true ), 'boolean', array( 'boolean_yes_label' => '' ) ); ?>
-        </div>
-    </div>
-    <div class="pods-field-option">
-        <?php echo PodsForm::label( 'query_var', __( 'Query Var', 'pods' ), __( 'help', 'pods' ) ); ?>
-        <?php echo PodsForm::field( 'query_var', pods_var_raw( 'query_var', $pod ), 'boolean', array( 'boolean_yes_label' => '' ) ); ?>
-    </div>
-    <div class="pods-field-option-container pods-depends-on pods-depends-on-query-var">
-        <div class="pods-field-option">
-            <?php echo PodsForm::label( 'query_var_string', __( 'Custom Query Var Name', 'pods' ), __( 'help', 'pods' ) ); ?>
-            <?php echo PodsForm::field( 'query_var_string', pods_var_raw( 'query_var_string', $pod ), 'text' ); ?>
-        </div>
-    </div>
-    <div class="pods-field-option">
-        <?php echo PodsForm::label( 'sort', __( 'Remember order saved on Post Types', 'pods' ), __( 'help', 'pods' ) ); ?>
-        <?php echo PodsForm::field( 'sort', pods_var_raw( 'sort', $pod ), 'boolean', array( 'boolean_yes_label' => '' ) ); ?>
-    </div>
+elseif ( 'taxonomy' == pods_v_sanitized( 'type', $pod ) && strlen( pods_v_sanitized( 'object', $pod ) ) < 1 ) {
+    $fields = $tab_options[ 'advanced' ];
+    $field_options = PodsForm::fields_setup( $fields );
+    $field = $pod;
 
-    <div class="pods-field-option">
-        <?php echo PodsForm::label( 'update_count_callback', __( 'Function to call when updating counts', 'pods' ), __( 'help', 'pods' ) ); ?>
-        <?php echo PodsForm::field( 'update_count_callback', pods_var_raw( 'update_count_callback', $pod ), 'text' ); ?>
-    </div>
+    include PODS_DIR . 'ui/admin/field-option.php';
+    ?>
     <div class="pods-field-option-group">
         <p class="pods-field-option-group-label">
             <?php _e( 'Associated Post Types', 'pods' ); ?>
@@ -779,7 +768,7 @@ foreach ( $tabs as $tab => $tab_label ) {
     if ( in_array( $tab, array( 'manage-fields', 'labels', 'advanced', 'extra-fields' ) ) || !isset( $tab_options[ $tab ] ) || empty( $tab_options[ $tab ] ) )
         continue;
 ?>
-    <div id="pods-<?php echo $tab; ?>" class="pods-nav-tab pods-manage-field pods-dependency pods-submittable-fields">
+    <div id="pods-<?php echo esc_attr( $tab ); ?>" class="pods-nav-tab pods-manage-field pods-dependency pods-submittable-fields">
         <?php
             $fields = $tab_options[ $tab ];
             $field_options = PodsForm::fields_setup( $fields );
@@ -801,7 +790,7 @@ if ( isset( $tabs[ 'extra-fields' ] ) ) {
     <p><a href="http://pods.io/docs/comparisons/compare-storage-types/" target="_blank"><?php _e( 'Find out more', 'pods' ); ?> &raquo;</a></p>
 
     <p class="submit">
-        <a href="<?php echo pods_var_update( array( 'enable_extra_fields' => 1 ) ); ?>" class="button-primary"><?php _e( 'Enable Extra Fields', 'pods' ); ?></a>
+        <a href="<?php echo esc_url( pods_query_arg( array( 'enable_extra_fields' => 1 ) ) ); ?>" class="button-primary"><?php _e( 'Enable Extra Fields', 'pods' ); ?></a>
     </p>
 </div>
 <?php
@@ -814,13 +803,13 @@ if ( isset( $tabs[ 'extra-fields' ] ) ) {
     <div id="side-info-field" class="inner-sidebar">
         <div id="side-sortables">
             <div id="submitdiv" class="postbox pods-no-toggle">
-                <h3><span>Manage <small>(<a href="<?php echo pods_var_update( array( 'action' . $obj->num => 'manage', 'id' . $obj->num => '' ) ); ?>">&laquo; <?php _e( 'Back to Manage', 'pods' ); ?></a>)
+                <h3><span>Manage <small>(<a href="<?php echo esc_url( pods_query_arg( array( 'action' . $obj->num => 'manage', 'id' . $obj->num => '' ) ) ); ?>">&laquo; <?php _e( 'Back to Manage', 'pods' ); ?></a>)
                 </small></span></h3>
                 <div class="inside">
                     <div class="submitbox" id="submitpost">
                         <div id="major-publishing-actions">
                             <div id="delete-action">
-                                <a href="<?php echo pods_var_update( array( 'action' . $obj->num => 'delete' ) ); ?>" class="submitdelete deletion pods-confirm" data-confirm="<?php _e( 'Are you sure you want to delete this Pod? All fields and data will be removed.', 'pods' ); ?>"> Delete Pod </a>
+                                <a href="<?php echo esc_url( pods_query_arg( array( 'action' . $obj->num => 'delete', '_wpnonce' => wp_create_nonce( 'pods-ui-action-delete' ) ) ) ); ?>" class="submitdelete deletion pods-confirm" data-confirm="<?php _e( 'Are you sure you want to delete this Pod? All fields and data will be removed.', 'pods' ); ?>"> <?php _e( 'Delete', 'pods' ); ?> Pod </a>
                             </div>
                             <div id="publishing-action">
                                 <img class="waiting" src="<?php echo esc_url( admin_url( 'images/wpspin_light.gif' ) ); ?>" alt="" />
@@ -896,7 +885,7 @@ if ( isset( $tabs[ 'extra-fields' ] ) ) {
 
     var pods_admin_submit_callback = function ( id ) {
         id = parseInt( id );
-        var thank_you = '<?php echo pods_slash( pods_var_update( array( 'do' => 'save' ) ) ); ?>';
+        var thank_you = '<?php echo pods_slash( pods_query_arg( array( 'do' => 'save' ) ) ); ?>';
 
         document.location = thank_you.replace( 'X_ID_X', id );
     }
@@ -913,7 +902,7 @@ if ( isset( $tabs[ 'extra-fields' ] ) ) {
 
         pods_sister_field_going[ id + '_' + $el.prop( 'id' ) ] = true;
 
-        var default_select = '<?php echo pods_slash( str_replace( array( "\n", "\r" ), ' ', PodsForm::field( 'field_data[--1][sister_id]', '', 'pick', array( 'data' => pods_var_raw( 'sister_id', $field_settings ) ) ) ) ); ?>';
+        var default_select = '<?php echo str_replace( array( "\n", "\r" ), ' ', PodsForm::field( 'field_data[--1][sister_id]', '', 'pick', array( 'data' => pods_var_raw( 'sister_id', $field_settings ) ) ) ); ?>';
         default_select = default_select.replace( /\-\-1/g, id );
 
         var related_pod_name = jQuery( '#pods-form-ui-field-data-' + id + '-pick-object' ).val();
@@ -933,8 +922,8 @@ if ( isset( $tabs[ 'extra-fields' ] ) ) {
         postdata = {
             action : 'pods_admin',
             method : 'load_sister_fields',
-            _wpnonce : '<?php echo wp_create_nonce( 'pods-load_sister_fields' ); ?>',
-            pod : '<?php echo pods_var( 'name', $pod ); ?>',
+            _wpnonce : '<?php echo esc_js( wp_create_nonce( 'pods-load_sister_fields' ) ); ?>',
+            pod : '<?php echo esc_js( pods_v( 'name', $pod ) ); ?>',
             related_pod : related_pod_name
         };
 
@@ -955,36 +944,39 @@ if ( isset( $tabs[ 'extra-fields' ] ) ) {
 
                     var select_container = default_select.match( /<select[^<]*>/g );
 
-                    if ( 'object' != typeof json || jQuery.isEmptyObject( json ) ) {
-                        if ( window.console ) console.log( d );
-                        if ( window.console ) console.log( json );
+                    if ( 'object' != typeof json || ! jQuery.isEmptyObject( json ) ) {
+                        if ( 'object' != typeof json ) {
+                            if ( window.console ) console.log( d );
+                            if ( window.console ) console.log( json );
 
-                        select_container += '<option value=""><?php esc_attr_e( 'There was a server error with your AJAX request.', 'pods' ); ?></option>';
-                    }
-                    else {
+                            select_container += '<option value=""><?php esc_attr_e( 'There was a server error with your AJAX request.', 'pods' ); ?></option>';
+                        }
+
                         select_container += '<option value=""><?php esc_attr_e( '-- Select Related Field --', 'pods' ); ?></option>';
 
                         for ( var field_id in json ) {
-                            var field_name = json[ field_id ];
+                            var field_name = json[field_id];
 
                             select_container += '<option value="' + field_id + '">' + field_name + '</option>';
                         }
+
+                        select_container += '</select>';
+
+                        $el.find( '.pods-sister-field' ).html( select_container );
+
+                        jQuery( '#pods-form-ui-field-data-' + id + '-sister-id' ).val( selected_value );
                     }
-
-                    select_container += '</select>';
-
-                    $el.find( '.pods-sister-field' ).html( select_container );
-
-                    jQuery( '#pods-form-ui-field-data-' + id + '-sister-id' ).val( selected_value );
-
-                    pods_sister_field_going[ id + '_' + $el.prop( 'id' ) ] = false;
+                    else {
+                        // None found
+                        $el.find( '.pods-sister-field' ).html( default_select );
+                    }
                 }
                 else {
                     // None found
                     $el.find( '.pods-sister-field' ).html( default_select );
-
-                    pods_sister_field_going[ id + '_' + $el.prop( 'id' ) ] = false;
                 }
+
+                pods_sister_field_going[ id + '_' + $el.prop( 'id' ) ] = false;
             },
             error : function () {
                 // None found

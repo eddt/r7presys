@@ -42,7 +42,7 @@ class PodsField_Number extends PodsField {
      * @since 2.0
      */
     public function __construct () {
-
+	    self::$label = __( 'Plain Number', 'pods' );
     }
 
     /**
@@ -89,7 +89,15 @@ class PodsField_Number extends PodsField {
             self::$type . '_decimals' => array(
                 'label' => __( 'Decimals', 'pods' ),
                 'default' => 0,
-                'type' => 'number'
+                'type' => 'number',
+	            'dependency' => true
+            ),
+            self::$type . '_format_soft' => array(
+	            'label'      => __( 'Soft format?', 'pods' ),
+	            'help'       => __( 'Remove trailing decimals (0)', 'pods' ),
+	            'default'    => 0,
+	            'type'       => 'boolean',
+	            'excludes-on' => array( self::$type . '_decimals' => 0 ),
             ),
             self::$type . '_step' => array(
                 'label' => __( 'Slider Increment (Step)', 'pods' ),
@@ -291,7 +299,7 @@ class PodsField_Number extends PodsField {
             $dot = ',';
         }
         else {
-            $thousands = $wp_locale->number_format[ 'thousands_sep' ];
+            $thousands = html_entity_decode( $wp_locale->number_format['thousands_sep'] );
             $dot = $wp_locale->number_format[ 'decimal_point' ];
         }
 
@@ -309,7 +317,7 @@ class PodsField_Number extends PodsField {
      * @param int $id
      * @param null $params
      *
-     * @return bool|mixed|void
+     * @return bool|mixed
      * @since 2.0
      */
     public function validate ( $value, $name = null, $options = null, $fields = null, $pod = null, $id = null, $params = null ) {
@@ -336,13 +344,18 @@ class PodsField_Number extends PodsField {
             $dot = ',';
         }
         else {
-            $thousands = $wp_locale->number_format[ 'thousands_sep' ];
+            $thousands = html_entity_decode( $wp_locale->number_format['thousands_sep'] );
             $dot = $wp_locale->number_format[ 'decimal_point' ];
         }
 
-        $check = str_replace( array( $thousands, $dot ), array( '', '.' ), $value );
+	    $check = str_replace(
+	    	array( $thousands, $dot, html_entity_decode($thousands) ),
+		    array( '', '.', '' ),
+		    $value
+	    );
+        $check = trim( $check );
 
-        $check = preg_replace( '/[0-9\.\-]/', '', $check );
+        $check = preg_replace( '/[0-9\.\-\s]/', '', $check );
 
         $label = pods_var( 'label', $options, ucwords( str_replace( '_', ' ', $name ) ) );
 
@@ -390,11 +403,12 @@ class PodsField_Number extends PodsField {
             $dot = ',';
         }
         else {
-            $thousands = $wp_locale->number_format[ 'thousands_sep' ];
+            $thousands = html_entity_decode( $wp_locale->number_format['thousands_sep'] );
             $dot = $wp_locale->number_format[ 'decimal_point' ];
         }
 
         $value = str_replace( array( $thousands, $dot ), array( '', '.' ), $value );
+	$value = trim( $value );
 
         $value = preg_replace( '/[^0-9\.\-]/', '', $value );
 
@@ -450,6 +464,11 @@ class PodsField_Number extends PodsField {
     public function format ( $value = null, $name = null, $options = null, $pod = null, $id = null ) {
         global $wp_locale;
 
+	if ( null === $value ) {
+		// Don't enforce a default value here
+		return null;
+	}
+
         if ( '9.999,99' == pods_var( self::$type . '_format', $options ) ) {
             $thousands = '.';
             $dot = ',';
@@ -494,6 +513,16 @@ class PodsField_Number extends PodsField {
             $value = number_format_i18n( (float) $value, $decimals );
         else
             $value = number_format( (float) $value, $decimals, $dot, $thousands );
+
+        // Optionally remove trailing decimal zero's.
+        if ( pods_v( self::$type . '_format_soft', $options, 0 ) ) {
+        	$parts = explode( $dot, $value );
+        	if ( isset( $parts[1] ) ) {
+        		$parts[1] = rtrim( $parts[1], '0' );
+        		$parts = array_filter( $parts );
+	        }
+	        $value = implode( $dot, $parts );
+        }
 
         return $value;
     }

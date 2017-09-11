@@ -243,7 +243,7 @@
                                 if ( 0 < id.length ) {
                                     id = parseInt( id[ 0 ] );
 
-                                    if ( 'NaN' == id )
+                                    if ( isNaN( id ) )
                                         id = 0;
                                 }
                                 else
@@ -357,7 +357,7 @@
                                 if ( 0 < id.length ) {
                                     id = parseInt( id[ 0 ] );
 
-                                    if ( 'NaN' == id )
+                                    if ( isNaN( id ) )
                                         id = 0;
                                 }
                                 else
@@ -843,6 +843,27 @@
                 var $current = $el.closest( '.pods-dependency' ),
 					$field = $el,
 					val = $el.val();
+
+                /**
+                 * Check if this element is a child from an 'advanced field options' group.
+                 * If so, set the value to empty if this is not the current field type group
+                 * Fixes dependency compatibility
+                 *
+                 * @todo Validate & improve this
+                 */
+                // Are we in the "Fields" tab?
+                if ( $current.parents('#pods-manage-fields').length ) {
+                    // And are we also in the "Additional Field Options" tab?
+                    if ( $el.parents('.pods-additional-field-options').length ) {
+                        // Get this field's type
+                        var $field_type = $current.find( '.pods-form-ui-field-name-field-data-type' ).val();
+                        // Check if this element resides within the correct "Additional Field Options" tab
+                        if ( ! $el.parents( '.pods-additional-field-options > .pods-depends-on-field-data-type-' + $field_type ).length ) {
+                            // This is not an option for this field. Empty the value
+                            val = '';
+                        }
+                    }
+                }
 
 				if ( null === val ) {
 					val = '';
@@ -1542,7 +1563,7 @@
                             else if ( 3 == field_array.length ) {
                                 the_field = parseInt( field_array[ 2 ].replace( '[', '' ).replace( ']', '' ) );
 
-                                if ( 'NaN' == the_field )
+                                if ( isNaN( the_field ) )
                                     field_data[ field_name ] = val;
                                 else {
                                     if ( 'undefined' == typeof field_data[ field_name ] )
@@ -1625,7 +1646,7 @@
                 } );
             },
             toggled : function () {
-                $( '.pods-toggled .handlediv, .pods-toggled h3' ).live( 'click', function () {
+                $( 'body' ).on( 'click', '.pods-toggled .handlediv, .pods-toggled h3', function () {
                     $( this ).parent().find( '.inside' ).slideToggle();
                     return false;
                 } );

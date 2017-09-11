@@ -22,6 +22,10 @@ require_once( plugin_dir_path( __FILE__ ) . '/includes/functions-pod_reference.p
 // Pull in the Frontier Template System
 require_once( plugin_dir_path( __FILE__ ) . 'class-pods_templates.php' );
 
+//Pull in Auto Template
+require_once( dirname( __FILE__ ) . '/includes/auto-template/Pods_Templates_Auto_Template_Settings.php' );
+new Pods_Templates_Auto_Template_Settings();
+
 Pods_Templates_Frontier::get_instance();
 
 
@@ -55,6 +59,13 @@ class Pods_Templates extends PodsComponent {
 	private $object_type = '_pods_template';
 
 	/**
+	 * The capability type.
+	 * @link https://codex.wordpress.org/Function_Reference/register_post_type
+	 * @var string
+	 */
+	private $capability_type = 'pods_template';
+
+	/**
 	 * Do things like register/enqueue scripts and stylesheets
 	 *
 	 * @since 2.0
@@ -76,7 +87,7 @@ class Pods_Templates extends PodsComponent {
 		);
 
 		if ( !pods_is_admin() )
-			$args[ 'capability_type' ] = 'pods_template';
+			$args[ 'capability_type' ] = $this->capability_type;
 
 		$args = PodsInit::object_label_fix( $args, 'post_type' );
 
@@ -99,7 +110,24 @@ class Pods_Templates extends PodsComponent {
 			add_filter( 'bulk_actions-edit-' . $this->object_type, array( $this, 'remove_bulk_actions' ) );
 
 			add_filter( 'builder_layout_filter_non_layout_post_types', array( $this, 'disable_builder_layout' ) );
+
 		}
+
+		add_filter( 'members_get_capabilities', array( $this, 'get_capabilities' ) );
+	}
+
+	public function get_capabilities( $caps ) {
+		$caps = array_merge( $caps, array(
+			'edit_' . $this->capability_type,
+			'read_' . $this->capability_type,
+			'delete_' . $this->capability_type,
+			'edit_' . $this->capability_type . 's',
+			'edit_others_' . $this->capability_type . 's',
+			'publish_' . $this->capability_type . 's',
+			'read_private_' . $this->capability_type . 's',
+			'edit_' . $this->capability_type . 's',
+		) );
+		return $caps;
 	}
 
 	public function disable_builder_layout ( $post_types ) {

@@ -12,7 +12,6 @@
  * @param string $results_error (optional) Throw an error if a records are found
  * @param string $no_results_error (optional) Throw an error if no records are found
  *
- * @internal param string $query The SQL query
  * @return array|bool|mixed|null|void
  * @since 2.0
  */
@@ -34,10 +33,11 @@ function pods_query ( $sql, $error = 'Database Error', $results_error = null, $n
 
         echo '<textarea cols="100" rows="24">';
 
-        if ( is_array( $debug_sql ) )
-            print_r( $debug_sql );
-        else
-            echo $debug_sql;
+        if ( is_array( $debug_sql ) ) {
+            $debug_sql = print_r( $debug_sql, true );
+        }
+
+        echo esc_textarea( $debug_sql );
 
         echo '</textarea>';
     }
@@ -89,72 +89,143 @@ function pods_message ( $message, $type = null ) {
     elseif ( 'error' == $type )
         $class = 'error';
 
-    echo '<div id="message" class="' . $class . ' fade"><p>' . $message . '</p></div>';
+    echo '<div id="message" class="' . esc_attr( $class ) . ' fade"><p>' . $message . '</p></div>';
 }
+
+$GLOBALS['pods_errors'] = array();
 
 /**
  * Error Handling which throws / displays errors
  *
- * @param string $error The error message to be thrown / displayed
- * @param object / boolean $obj If object, if $obj->display_errors is set, and is set to true: display errors;
- *                              If boolean, and is set to true: display errors
+ * @param string|array        $error The error message(s) to be thrown / displayed.
+ * @param object|boolean|null $obj   If $obj->display_errors is set and is set to true it will display errors, if boolean and is set to true it will display errors.
  *
- * @throws Exception
+ * @throws Exception Throws exception for developer-oriented error handling.
  *
- * @return mixed|void
+ * @return mixed
  *
  * @since 2.0
  */
-function pods_error ( $error, $obj = null ) {
-    $display_errors = false;
+function pods_error( $error, $obj = null ) {
 
-    if ( is_object( $obj ) && isset( $obj->display_errors ) && true === $obj->display_errors )
-        $display_errors = true;
-    elseif ( is_bool( $obj ) && true === $obj )
-        $display_errors = true;
+	global $pods_errors;
 
-    if ( is_object( $error ) && 'Exception' == get_class( $error ) ) {
-        $error = $error->getMessage();
-        $display_errors = false;
-    }
+	$error_mode = 'exception';
 
-    if ( is_array( $error ) ) {
-        if ( 1 == count( $error ) )
-            $error = current( $error );
-        elseif ( defined( 'DOING_AJAX' ) && DOING_AJAX )
-            $error = __( 'The following issue occurred:', 'pods' ) . "\n\n- " . implode( "\n- ", $error );
-        else
-            $error = __( 'The following issues occurred:', 'pods' ) . "\n<ul><li>" . implode( "</li>\n<li>", $error ) . "</li></ul>";
-    }
+	if ( is_object( $obj ) && isset( $obj->display_errors ) ) {
+		if ( true === $obj->display_errors ) {
+			$error_mode = 'exit';
+		} elseif ( false === $obj->display_errors ) {
+			$error_mode = 'exception';
+		} else {
+			$error_mode = $obj->display_errors;
+		}
+	} elseif ( true === $obj ) {
+		$error_mode = 'exit';
+	} elseif ( false === $obj ) {
+		$error_mode = 'exception';
+	} elseif ( is_string( $obj ) ) {
+		$error_mode = $obj;
+	}
 
-    if ( is_object( $error ) )
-        $error = __( 'An unknown error has occurred', 'pods' );
+	if ( is_object( $error ) && 'Exception' === get_class( $error ) ) {
+		$error = $error->getMessage();
 
-    // log error in WP
-    $log_error = new WP_Error( 'pods-error-' . md5( $error ), $error );
+		$error_mode = 'exception';
+	}
 
-    // throw error as Exception and return false if silent
-    if ( false === $display_errors && !empty( $error ) ) {
-        $exception_bypass = apply_filters( 'pods_error_exception', null, $error );
+	/**
+	 * @var string $error_mode Throw an exception, exit with the message, return false, or return WP_Error
+	 */
+	if ( ! in_array( $error_mode, array( 'exception', 'exit', 'false', 'wp_error' ), true ) ) {
+		$error_mode = 'exception';
+	}
 
-        if ( null !== $exception_bypass )
-            return $exception_bypass;
+	/**
+	 * Filter the error mode used by pods_error.
+	 *
+	 * @param string $error_mode Error mode
+	 * @param string|array $error Error message(s)
+	 * @param object|boolean|string|null $obj
+	 */
+	$error_mode = apply_filters( 'pods_error_mode', $error_mode, $error, $obj );
 
-        set_exception_handler( 'pods_error' );
+	if ( is_array( $error ) ) {
+		$error = array_map( 'wp_kses_post', $error );
 
-        throw new Exception( $error );
-    }
+		if ( 1 === count( $error ) ) {
+			$error = current( $error );
 
-    $die_bypass = apply_filters( 'pods_error_die', null, $error );
+			// Create WP_Error for use later.
+			$wp_error = new WP_Error( 'pods-error-' . md5( $error ), $error );
+		} else {
+			// Create WP_Error for use later.
+			$wp_error = new WP_Error();
 
-    if ( null !== $die_bypass )
-        return $die_bypass;
+			foreach ( $error as $error_message ) {
+				$wp_error->add( 'pods-error-' . md5( $error_message ), $error_message );
+			}
 
-    // die with error
-    if ( !defined( 'DOING_AJAX' ) && !headers_sent() && ( is_admin() || false !== strpos( $_SERVER[ 'REQUEST_URI' ], 'wp-comments-post.php' ) ) )
-        wp_die( $error );
-    else
-        die( "<e>$error</e>" );
+			if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+				$error = __( 'The following issue occurred:', 'pods' )
+						 . "\n\n- " . implode( "\n- ", $error );
+			} else {
+				$error = __( 'The following issues occurred:', 'pods' )
+						 . "\n<ul><li>" . implode( "</li>\n<li>", $error ) . "</li></ul>";
+			}
+		}
+	} else {
+		if ( is_object( $error ) ) {
+			$error = __( 'An unknown error has occurred', 'pods' );
+		}
+
+		$error = wp_kses_post( $error );
+
+		// Create WP_Error for use later.
+		$wp_error = new WP_Error( 'pods-error-' . md5( $error ), $error );
+	}
+
+	$last_error = $pods_errors;
+
+	$pods_errors = array();
+
+	if ( $last_error === $error && 'exception' === $error_mode ) {
+		$error_mode = 'exit';
+	}
+
+	if ( ! empty( $error ) ) {
+		if ( 'exception' === $error_mode ) {
+			$exception_bypass = apply_filters( 'pods_error_exception', null, $error );
+
+			if ( null !== $exception_bypass ) {
+				return $exception_bypass;
+			}
+
+			$pods_errors = $error;
+
+			set_exception_handler( 'pods_error' );
+
+			throw new Exception( $error );
+		} elseif ( 'exit' === $error_mode ) {
+			$die_bypass = apply_filters( 'pods_error_die', null, $error );
+
+			if ( null !== $die_bypass ) {
+				return $die_bypass;
+			}
+
+			// die with error
+			if ( ! defined( 'DOING_AJAX' ) && ! headers_sent() && ( is_admin() || false !== strpos( $_SERVER['REQUEST_URI'], 'wp-comments-post.php' ) ) ) {
+				wp_die( $error, '', array( 'back_link' => true ) );
+			} else {
+				die( sprintf( '<e>%s</e>', $error ) );
+			}
+		} elseif ( 'wp_error' === $error_mode ) {
+			return $wp_error;
+		}
+	}
+
+	return false;
+
 }
 
 /**
@@ -168,7 +239,6 @@ $pods_debug = 0;
  * @param mixed $debug The error message to be thrown / displayed
  * @param boolean $die If set to true, a die() will occur, if set to (int) 2 then a wp_die() will occur
  * @param string $prefix
- * @internal param bool $identifier If set to true, an identifying # will be output
  *
  * @return void
  *
@@ -201,7 +271,7 @@ function pods_debug ( $debug = '_null', $die = false, $prefix = '_null' ) {
     $debug = '<e>' . $debug;
 
     if ( 2 === $die )
-        wp_die( $debug );
+        wp_die( $debug, '', array( 'back_link' => true ) );
     elseif ( true === $die )
         die( $debug );
 
@@ -425,7 +495,7 @@ function pods_help ( $text, $url = null ) {
 		$text .= '<br /><br /><a href="' . $url . '" target="_blank">' . __( 'Find out more', 'pods' ) . ' &raquo;</a>';
 	}
 
-    echo '<img src="' . PODS_URL . 'ui/images/help.png" alt="' . esc_attr( $text ) . '" class="pods-icon pods-qtip" />';
+    echo '<img src="' . esc_url( PODS_URL ) . 'ui/images/help.png" alt="' . esc_attr( $text ) . '" class="pods-icon pods-qtip" />';
 }
 
 /**
@@ -585,7 +655,22 @@ function pods_shortcode ( $tags, $content = null ) {
 		return '';
 	}
 
+	// For enforcing pagination parameters when not displaying pagination
+	$page = 1;
+	$offset = 0;
+
+	if ( isset( $tags['page'] ) ) {
+		$page = (int) $tags['page'];
+		$page = max( $page, 1 );
+	}
+
+	if ( isset( $tags['offset'] ) ) {
+		$offset = (int) $tags['offset'];
+		$offset = max( $offset, 0 );
+	}
+
     $defaults = array(
+    	'use_current' => false,
         'name' => null,
         'id' => null,
         'slug' => null,
@@ -628,8 +713,9 @@ function pods_shortcode ( $tags, $content = null ) {
 
     $tags = apply_filters( 'pods_shortcode', $tags );
 
-	$tags[ 'pagination' ] = (boolean) $tags[ 'pagination' ];
-	$tags[ 'search' ] = (boolean) $tags[ 'search' ];
+	$tags[ 'pagination' ] = filter_var($tags[ 'pagination' ], FILTER_VALIDATE_BOOLEAN);
+	$tags[ 'search' ] = filter_var($tags[ 'pagination' ], FILTER_VALIDATE_BOOLEAN);
+	$tags[ 'use_current' ] = filter_var($tags[ 'use_current' ], FILTER_VALIDATE_BOOLEAN);
 
     if ( empty( $content ) )
         $content = null;
@@ -639,7 +725,7 @@ function pods_shortcode ( $tags, $content = null ) {
 		$return = '';
 
 		if ( !file_exists( $tags[ 'view' ] ) ) {
-			$return = pods_view( $tags[ 'view' ], null, (int) $tags[ 'expires' ], $tags[ 'cache_mode' ] );
+			$return = pods_view( $tags[ 'view' ], null, (int) $tags[ 'expires' ], $tags[ 'cache_mode' ], true );
 
 			if ( $tags[ 'shortcodes' ] && defined( 'PODS_SHORTCODE_ALLOW_SUB_SHORTCODES' ) && PODS_SHORTCODE_ALLOW_SUB_SHORTCODES ) {
 				$return = do_shortcode( $return );
@@ -649,7 +735,7 @@ function pods_shortcode ( $tags, $content = null ) {
 		return $return;
 	}
 
-    if ( empty( $tags[ 'name' ] ) ) {
+    if ( ! $tags['use_current'] && empty( $tags[ 'name' ] ) ) {
         if ( in_the_loop() || is_singular() ) {
             $pod = pods( get_post_type(), get_the_ID(), false );
 
@@ -679,7 +765,7 @@ function pods_shortcode ( $tags, $content = null ) {
         return '<p>Please provide either a template or field name</p>';
     }
 
-    if ( !isset( $id ) ) {
+    if ( ! $tags['use_current'] && !isset( $id ) ) {
         // id > slug (if both exist)
 		$id = null;
 
@@ -694,18 +780,32 @@ function pods_shortcode ( $tags, $content = null ) {
         if ( !empty( $tags[ 'id' ] ) ) {
             $id = $tags[ 'id' ];
 
+            if ( defined( 'PODS_SHORTCODE_ALLOW_EVALUATE_TAGS' ) && PODS_SHORTCODE_ALLOW_EVALUATE_TAGS ) {
+                $id = pods_evaluate_tags( $id );
+            }
+
             if ( is_numeric( $id ) )
                 $id = absint( $id );
         }
     }
 
-    if ( !isset( $pod ) )
-        $pod = pods( $tags[ 'name' ], $id );
+    if ( !isset( $pod ) ) {
+    	if ( ! $tags['use_current'] ) {
+        	$pod = pods( $tags[ 'name' ], $id );
+    	} else {
+    		$pod = pods();
+    		$id = $pod->id();
+    	}
+    }
 
-    if ( empty( $pod ) )
+    if ( empty( $pod ) || ! $pod->valid() )
         return '<p>Pod not found</p>';
 
-	if ( empty( $id ) ) {
+	$found = 0;
+
+	$is_singular = ( ! empty( $id ) || $tags['use_current'] );
+
+	if ( ! $is_singular ) {
 		$params = array();
 
 		if ( !defined( 'PODS_DISABLE_SHORTCODE_SQL' ) || !PODS_DISABLE_SHORTCODE_SQL ) {
@@ -741,34 +841,48 @@ function pods_shortcode ( $tags, $content = null ) {
 			}
 		}
 
-		if ( !empty( $tags[ 'limit' ] ) ) {
-			$params[ 'limit' ] = (int) $tags[ 'limit' ];
+		// Forms require params set
+		if ( ! empty( $params ) || empty( $tags[ 'form' ] ) ) {
+			if ( !empty( $tags[ 'limit' ] ) ) {
+				$params[ 'limit' ] = (int) $tags[ 'limit' ];
+			}
+
+			$params[ 'search' ] = $tags[ 'search' ];
+
+			$params[ 'pagination' ] = $tags[ 'pagination' ];
+
+			// If we aren't displaying pagination, we need to enforce page/offset
+			if ( ! $params['pagination'] ) {
+				$params['page']   = $page;
+				$params['offset'] = $offset;
+
+				// Force pagination on, we need it and we're enforcing page/offset
+				$params['pagination'] = true;
+			} else {
+				// If we are displaying pagination, allow page/offset override only if *set*
+
+				if ( isset( $tags['page'] ) ) {
+					$params['page'] = (int) $tags['page'];
+					$params['page'] = max( $params['page'], 1 );
+				}
+
+				if ( isset( $tags['offset'] ) ) {
+					$params['offset'] = (int) $tags['offset'];
+					$params['offset'] = max( $params['offset'], 0 );
+				}
+			}
+
+			if ( !empty( $tags[ 'cache_mode' ] ) && 'none' != $tags[ 'cache_mode' ] ) {
+				$params[ 'cache_mode' ] = $tags[ 'cache_mode' ];
+				$params[ 'expires' ] = (int) $tags[ 'expires' ];
+			}
+
+			$params = apply_filters( 'pods_shortcode_findrecords_params', $params, $pod, $tags );
+
+			$pod->find( $params );
+
+			$found = $pod->total();
 		}
-
-		$params[ 'search' ] = $tags[ 'search' ];
-
-		if ( 0 < absint( $tags[ 'page' ] ) ) {
-			$params[ 'page' ] = absint( $tags[ 'page' ] );
-		}
-
-		$params[ 'pagination' ] = $tags[ 'pagination' ];
-
-		if ( 0 < (int) $tags[ 'offset' ] ) {
-			$params[ 'offset' ] = (int) $tags[ 'offset' ];
-		}
-
-		if ( !empty( $tags[ 'cache_mode' ] ) && 'none' != $tags[ 'cache_mode' ] ) {
-			$params[ 'cache_mode' ] = $tags[ 'cache_mode' ];
-			$params[ 'expires' ] = (int) $tags[ 'expires' ];
-		}
-
-		$params = apply_filters( 'pods_shortcode_findrecords_params', $params, $pod, $tags );
-
-		$pod->find( $params );
-
-		$found = $pod->total();
-	} else {
-		$found = 0;
 	}
 
     if ( !empty( $tags[ 'form' ] ) ) {
@@ -778,7 +892,7 @@ function pods_shortcode ( $tags, $content = null ) {
 				return '';
 			}
 			// Only explicitly allow user edit forms
-			elseif ( !empty( $id ) && ( !defined( 'PODS_SHORTCODE_ALLOW_USER_EDIT' ) || !PODS_SHORTCODE_ALLOW_USER_EDIT ) ) {
+			elseif ( $is_singular && ( !defined( 'PODS_SHORTCODE_ALLOW_USER_EDIT' ) || !PODS_SHORTCODE_ALLOW_USER_EDIT ) ) {
 				return '';
 			}
 		}
@@ -814,18 +928,18 @@ function pods_shortcode ( $tags, $content = null ) {
 
     ob_start();
 
-    if ( empty( $id ) && false !== $tags[ 'filters' ] && 'before' == $tags[ 'filters_location' ] )
+    if ( ! $is_singular && false !== $tags[ 'filters' ] && 'before' == $tags[ 'filters_location' ] )
         echo $pod->filters( $tags[ 'filters' ], $tags[ 'filters_label' ] );
 
-    if ( empty( $id ) && 0 < $found && true === $tags[ 'pagination' ] && in_array( $tags[ 'pagination_location' ], array( 'before', 'both' ) ) )
+    if ( ! $is_singular && 0 < $found && true === $tags[ 'pagination' ] && in_array( $tags[ 'pagination_location' ], array( 'before', 'both' ) ) )
         echo $pod->pagination( $tags[ 'pagination_label' ] );
 
     echo $pod->template( $tags[ 'template' ], $content );
 
-    if ( empty( $id ) && 0 < $found && true === $tags[ 'pagination' ] && in_array( $tags[ 'pagination_location' ], array( 'after', 'both' ) ) )
+    if ( ! $is_singular && 0 < $found && true === $tags[ 'pagination' ] && in_array( $tags[ 'pagination_location' ], array( 'after', 'both' ) ) )
         echo $pod->pagination( $tags[ 'pagination_label' ] );
 
-    if ( empty( $id ) && false !== $tags[ 'filters' ] && 'after' == $tags[ 'filters_location' ] )
+    if ( ! $is_singular && false !== $tags[ 'filters' ] && 'after' == $tags[ 'filters_location' ] )
         echo $pod->filters( $tags[ 'filters' ], $tags[ 'filters_label' ] );
 
 	$return = ob_get_clean();
@@ -884,14 +998,16 @@ function pods_do_shortcode( $content, $shortcodes ) {
 		return $content;
 	}
 
-	// Store all shortcodes, to restore later
-	$temp_shortcode_tags = $shortcode_tags;
-
-	// Loop through all shortcodes and remove those not being used right now
-	foreach ( $shortcode_tags as $tag => $callback ) {
-		if ( ! in_array( $tag, $shortcodes ) ) {
-			unset( $shortcode_tags[ $tag ] );
-		}
+	if ( !empty( $shortcodes ) ) {
+		$temp_shortcode_filter = function ( $return, $tag, $attr, $m ) use ( $shortcodes ) {
+			if ( in_array( $m[2], $shortcodes ) ) {
+				// If shortcode being called is in list, return false to allow it to run
+				return false;
+			}
+			// Return original shortcode string if we aren't going to handle at this time
+			return $m[0];
+		};
+		add_filter( 'pre_do_shortcode_tag', $temp_shortcode_filter, 10, 4 );
 	}
 
 	// Build Shortcode regex pattern just for the shortcodes we want
@@ -900,8 +1016,9 @@ function pods_do_shortcode( $content, $shortcodes ) {
 	// Call shortcode callbacks just for the shortcodes we want
 	$content = preg_replace_callback( "/$pattern/s", 'do_shortcode_tag', $content );
 
-	// Restore all shortcode tags
-	$shortcode_tags = $temp_shortcode_tags;
+	if ( isset( $temp_shortcode_filter ) ) {
+		remove_filter( 'pre_do_shortcode_tag', $temp_shortcode_filter );
+	}
 
 	return $content;
 
@@ -950,9 +1067,9 @@ function pods_version_notice_wp () {
 ?>
     <div class="error fade">
         <p>
-            <strong><?php _e( 'NOTICE', 'pods' ); ?>:</strong> Pods <?php echo PODS_VERSION; ?> <?php _e( 'requires a minimum of', 'pods' ); ?>
-            <strong>WordPress <?php echo PODS_WP_VERSION_MINIMUM; ?>+</strong> <?php _e( 'to function. You are currently running', 'pods' ); ?>
-            <strong>WordPress <?php echo $wp_version; ?></strong> - <?php _e( 'Please upgrade your WordPress to continue.', 'pods' ); ?>
+            <strong><?php _e( 'NOTICE', 'pods' ); ?>:</strong> Pods <?php echo esc_html( PODS_VERSION ); ?> <?php _e( 'requires a minimum of', 'pods' ); ?>
+            <strong>WordPress <?php echo esc_html( PODS_WP_VERSION_MINIMUM ); ?>+</strong> <?php _e( 'to function. You are currently running', 'pods' ); ?>
+            <strong>WordPress <?php echo esc_html( $wp_version ); ?></strong> - <?php _e( 'Please upgrade your WordPress to continue.', 'pods' ); ?>
         </p>
     </div>
 <?php
@@ -969,9 +1086,9 @@ function pods_version_notice_php () {
 ?>
     <div class="error fade">
         <p>
-            <strong><?php _e( 'NOTICE', 'pods' ); ?>:</strong> Pods <?php echo PODS_VERSION; ?> <?php _e( 'requires a minimum of', 'pods' ); ?>
-            <strong>PHP <?php echo PODS_PHP_VERSION_MINIMUM; ?>+</strong> <?php _e( 'to function. You are currently running', 'pods' ); ?>
-            <strong>PHP <?php echo phpversion(); ?></strong> - <?php _e( 'Please upgrade (or have your Hosting Provider upgrade it for you) your PHP version to continue.', 'pods' ); ?>
+            <strong><?php _e( 'NOTICE', 'pods' ); ?>:</strong> Pods <?php echo esc_html( PODS_VERSION ); ?> <?php _e( 'requires a minimum of', 'pods' ); ?>
+            <strong>PHP <?php echo esc_html( PODS_PHP_VERSION_MINIMUM ); ?>+</strong> <?php _e( 'to function. You are currently running', 'pods' ); ?>
+            <strong>PHP <?php echo esc_html( phpversion() ); ?></strong> - <?php _e( 'Please upgrade (or have your Hosting Provider upgrade it for you) your PHP version to continue.', 'pods' ); ?>
         </p>
     </div>
 <?php
@@ -989,9 +1106,9 @@ function pods_version_notice_mysql () {
     $mysql = $wpdb->db_version();
 ?>
     <div class="error fade">
-        <p><strong><?php _e( 'NOTICE', 'pods' ); ?>:</strong> Pods <?php echo PODS_VERSION; ?> <?php _e( 'requires a minimum of', 'pods' ); ?>
-            <strong>MySQL <?php echo PODS_MYSQL_VERSION_MINIMUM; ?>+</strong> <?php _e( 'to function. You are currently running', 'pods' ); ?>
-            <strong>MySQL <?php echo $mysql; ?></strong> - <?php _e( 'Please upgrade (or have your Hosting Provider upgrade it for you) your MySQL version to continue.', 'pods' ); ?>
+        <p><strong><?php _e( 'NOTICE', 'pods' ); ?>:</strong> Pods <?php echo esc_html( PODS_VERSION ); ?> <?php _e( 'requires a minimum of', 'pods' ); ?>
+            <strong>MySQL <?php echo esc_html( PODS_MYSQL_VERSION_MINIMUM ); ?>+</strong> <?php _e( 'to function. You are currently running', 'pods' ); ?>
+            <strong>MySQL <?php echo esc_html( $mysql ); ?></strong> - <?php _e( 'Please upgrade (or have your Hosting Provider upgrade it for you) your MySQL version to continue.', 'pods' ); ?>
         </p>
     </div>
 <?php
@@ -1083,7 +1200,7 @@ function pods_redirect ( $location, $status = 302 ) {
 function pods_permission ( $options ) {
     global $current_user;
 
-    get_currentuserinfo();
+    wp_get_current_user();
 
     $permission = false;
 
@@ -1211,7 +1328,7 @@ function pods_by_title ( $title, $output = OBJECT, $type = 'page', $status = nul
     $page = $wpdb->get_var( $wpdb->prepare( "SELECT `ID` FROM `{$wpdb->posts}` WHERE `post_title` = %s AND `post_type` = %s" . $status_sql . $orderby_sql, $prepared ) );
 
     if ( $page )
-        return get_post( $page, $output );
+        return get_post( pods_v( $page, 'post_id' ), $output );
 
     return null;
 }
@@ -1744,6 +1861,11 @@ function pods_is_plugin_active ( $plugin ) {
 function pods_no_conflict_check ( $object_type = 'post' ) {
     if ( 'post_type' == $object_type )
         $object_type = 'post';
+    elseif ( 'term' == $object_type )
+        $object_type = 'taxonomy';
+
+    if ( ! class_exists( 'PodsInit' ) )
+        pods_init();
 
     if ( !empty( PodsInit::$no_conflict ) && isset( PodsInit::$no_conflict[ $object_type ] ) && !empty( PodsInit::$no_conflict[ $object_type ] ) )
         return true;
@@ -1767,6 +1889,9 @@ function pods_no_conflict_on ( $object_type = 'post', $object = null ) {
         $object_type = 'post';
     elseif ( 'term' == $object_type )
         $object_type = 'taxonomy';
+
+    if ( ! class_exists( 'PodsInit' ) )
+        pods_init();
 
     if ( !empty( PodsInit::$no_conflict ) && isset( PodsInit::$no_conflict[ $object_type ] ) && !empty( PodsInit::$no_conflict[ $object_type ] ) )
         return true;
@@ -1807,7 +1932,17 @@ function pods_no_conflict_on ( $object_type = 'post', $object = null ) {
 		if ( apply_filters( 'pods_meta_handler', true, 'term' ) ) {
             // Handle *_term_meta
 			if ( apply_filters( 'pods_meta_handler_get', true, 'term' ) ) {
-        		$no_conflict[ 'filter' ] = array();
+				$no_conflict[ 'filter' ] = array_merge( $no_conflict[ 'filter' ], array(
+					array( 'get_term_metadata', array( PodsInit::$meta, 'get_term_meta' ), 10, 4 )
+				) );
+			}
+
+			if ( !pods_tableless() ) {
+				$no_conflict[ 'filter' ] = array_merge( $no_conflict[ 'filter' ], array(
+					array( 'add_term_metadata', array( PodsInit::$meta, 'add_term_meta' ), 10, 5 ),
+					array( 'update_term_metadata', array( PodsInit::$meta, 'update_term_meta' ), 10, 5 ),
+					array( 'delete_term_metadata', array( PodsInit::$meta, 'delete_term_meta' ), 10, 5 )
+				) );
 			}
 
 			$no_conflict[ 'action' ] = array(
@@ -1859,8 +1994,8 @@ function pods_no_conflict_on ( $object_type = 'post', $object = null ) {
 		}
 
         $no_conflict[ 'action' ] = array(
-            //array( 'user_register', array( PodsInit::$meta, 'save_user' ) ),
-            array( 'profile_update', array( PodsInit::$meta, 'save_user' ) )
+            array( 'user_register', array( PodsInit::$meta, 'save_user' ) ),
+            array( 'profile_update', array( PodsInit::$meta, 'save_user' ), 10, 2 )
         );
     }
     elseif ( 'comment' == $object_type ) {
@@ -1942,6 +2077,11 @@ function pods_no_conflict_on ( $object_type = 'post', $object = null ) {
 function pods_no_conflict_off ( $object_type = 'post' ) {
     if ( 'post_type' == $object_type )
         $object_type = 'post';
+    elseif ( 'term' == $object_type )
+        $object_type = 'taxonomy';
+
+    if ( ! class_exists( 'PodsInit' ) )
+        pods_init();
 
     if ( empty( PodsInit::$no_conflict ) || !isset( PodsInit::$no_conflict[ $object_type ] ) || empty( PodsInit::$no_conflict[ $object_type ] ) )
         return false;

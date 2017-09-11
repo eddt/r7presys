@@ -4,24 +4,9 @@
 
 .pods-ui-filter-bar-primary {
     padding: 8px 15px;
-    line-height: 32px;
-
-    -moz-box-shadow: inset 0 1px 0 #fff;
-    -webkit-box-shadow: inset 0 1px 0 white;
-    box-shadow: inset 0 1px 0 white;
-    border-color: #DFDFDF;
-
     -webkit-border-radius: 3px;
     border-radius: 3px;
-
-    background-color: #F1F1F1;
-    background-image: -ms-linear-gradient(top, #F9F9F9, #ECECEC);
-    background-image: -moz-linear-gradient(top, #F9F9F9, #ECECEC);
-    background-image: -o-linear-gradient(top, #F9F9F9, #ECECEC);
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#F9F9F9), to(#ECECEC));
-    background-image: -webkit-linear-gradient(top, #F9F9F9, #ECECEC);
-    background-image: linear-gradient(top, #F9F9F9, #ECECEC);
-
+    background-color: #F9F9F9;
     border: 1px solid #DFDFDF;
     position: relative;
     height: auto;
@@ -51,8 +36,7 @@
     line-height: 13px;
     padding: 3px 10px;
     cursor: pointer;
-    -webkit-border-radius: 11px;
-    border-radius: 11px;
+    border-radius: 3px;
     -moz-box-sizing: content-box;
     -webkit-box-sizing: content-box;
     box-sizing: content-box;
@@ -64,7 +48,6 @@
 
 .pods-ui-filter-bar-primary ul.subsubsub li a:hover {
     color: #000;
-    border-color: #666;
 }
 
 .pods-ui-filter-bar-primary ul.subsubsub li a:active {
@@ -75,7 +58,7 @@
     border: none;
     font-weight: bold;
     color: white;
-    background: #21759B url(/wp-admin/images/button-grad.png) repeat-x scroll left top;
+    background: #21759B;
     text-shadow: rgba(0, 0, 0, 0.3) 0 -1px 0;
 }
 
@@ -163,7 +146,7 @@ body.branch-3-5 .pods-ui-filter-bar-primary p.search-box input.button {
     box-sizing: content-box;
 
     border: none;
-    background: #21759B url(/wp-admin/images/button-grad.png) repeat-x scroll left top;
+    background: #21759B;
     text-shadow: rgba(0, 0, 0, 0.3) 0 -1px 0;
 }
 
@@ -176,7 +159,7 @@ body.branch-3-5 .pods-ui-filter-bar-primary p.search-box input.button {
 }
 
 .pods-ui-filter-bar-secondary ul.subsubsub li.pods-ui-filter-bar-filter:active {
-    background: #21759B url(/wp-admin/images/button-grad-active.png) repeat-x scroll left top;
+    background: #21759B;
 }
 
 .pods-ui-filter-bar-secondary ul.subsubsub li.pods-ui-filter-bar-filter:hover a:hover,
@@ -303,7 +286,7 @@ body.branch-3-5 .pods-ui-posts-filter-popup p.submit input.button {
     padding: 0 32px;
 }
 
-.pods-ui-posts-filter-popup p:after
+.pods-ui-posts-filter-popup p:after,
 .pods-ui-posts-filter-popup .pods-ui-posts-filters:after {
     content: ".";
     display: block;
