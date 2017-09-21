@@ -22,6 +22,8 @@
     <link rel="profile" href="http://gmpg.org/xfn/11">
     <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
     <?php wp_head(); ?>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
     <?php echo '<link media="all" type="text/css" href="'. get_template_directory_uri() .'/style-dbs-portal01.css" rel="stylesheet">'; ?>
 
 </head>
@@ -36,26 +38,23 @@
     </div>
 </header><!-- #masthead -->
 <?php if ( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'diesel-barber-shop') : ?>
-    <div class="aap-header"></div>
-<?php else : ?>
-    <div class="header-image"></div>
-    <div class="header-image-frame"></div>
+    <div class="dbs-header"></div>
+
 <?php endif; ?>
 
 <?php if( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'diesel-barber-shop') : ?>
     <nav class="site-navigation"></nav><!-- .site-navigation -->
-    <div class="container aap-slides">
+    <div class="container dbs-slides">
         <div class="carousel slide" id="myCarousel"><!-- BEGIN Slideshow Carousel -->
             <div class="carousel-inner">
                 <div class="item active">
-                    <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/aap/aap_tp1_grfx_slide01.jpg">
+                    <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/dbs/dbs_tp1_grfx_slide01.jpg">
                 </div>
                 <div class="item">
-                    <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/aap/aap_tp1_grfx_slide02.jpg">
+                    <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/dbs/dbs_tp1_grfx_slide02.jpg">
                 </div>
                 <div class="item">
-                    <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/aap/aap_tp1_grfx_slide03.jpg">
-                </div>
+                    <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/dbs/dbs_tp1_grfx_slide03.jpg">         </div>
             </div>
             <a data-slide="prev" href="#myCarousel" class="left carousel-control">‹</a>
             <a data-slide="next" href="#myCarousel" class="right carousel-control">›</a>
@@ -69,21 +68,21 @@
 
 <div class="main-content">
 
-    <div class="container aap-content">
+    <div class="container dbs-content">
         <div class="row">
 
             <div class="sidebar col-12 col-sm-5 col-lg-4">
                 <a href="<?php echo site_url(); ?>/diesel-barber-shop">
-                    <?php echo '<img src="'. get_template_directory_uri() .'/presentations/aap/aap_tp1_grfx_logo.png" >' ;?>
+                    <?php echo '<img src="'. get_template_directory_uri() .'/presentations/dbs/dbs_tp1_grfx_logo.png" >' ;?>
                 </a>
                 <div class="sidebar-navmenu">
                     <div class="sidebar-navmenu-button">
-                        <b>Menu</b> <img src="<?php echo get_template_directory_uri();?>/presentations/aap/aap_tp1_grfx_home_menu_btn.png" style="cursor: pointer; display: inline-block;" id="sidebar-navmenu-btn">
+                        <b>Menu</b> <img src="<?php echo get_template_directory_uri();?>/presentations/dbs/dbs_tp1_grfx_home_menu_btn.png" style="cursor: pointer; display: inline-block;" id="sidebar-navmenu-btn">
                     </div>
 
                     <?php wp_nav_menu(
                         array(
-                            'menu' => 'd_b_s',
+                            'menu' => 'diesel_b_s',
                             'theme_location' => 'primary',
                             'container_class' => 'sidebar-vertical',
                             'menu_class' => 'tree-sidebar-nav sidebar-nav',
@@ -132,7 +131,7 @@
             <div class="main-content-inner col-12 col-sm-7 col-lg-8">
                 <div id="primary" class="content-area">
             <?php if ( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) != 'diesel-barber-shop') : ?>
-                <div id="pre-content-spacer"></div>
+                <div id="not-pre-content-spacer"><?php get_the_post_thumbnail(); ?></div>
             <?php endif; ?>
 
                     <div id="content" class="site-content" role="main">
@@ -149,17 +148,11 @@
                             <?php while ( have_posts() ) : the_post(); ?>
                                 <?php
                                 if ( ! post_password_required() ) {
-                                    //echo '<div class="post-image">';
-                                    //the_post_thumbnail('full');
-                                    //echo '</div>';
+                                    echo '<div class="post-image">';
+                                    the_post_thumbnail('full');
+                                    echo '</div>';
                                 }
                                 ?>
-                                <?php $post_img_id = get_post_thumbnail_id( $post_id ); ?>
-                                <script type="text/javascript">
-                                    jQuery(document).ready(function() {
-                                        jQuery('.header-image').css("background","url('<?php echo wp_get_attachment_url( $post_img_id ); ?>') top right #D18F66")
-                                    });
-                                </script>
 
                                 <?php get_template_part( 'content', get_post_type() ); ?>
                             <?php endwhile; ?>
@@ -173,13 +166,13 @@
 </div><!-- close .main-content -->
 
 <footer id="colophon" class="site-footer" role="contentinfo">
-    <div class="aap-footer">
+    <div class="dbs-footer">
         <div class="container">
             <div class="site-footer-inner col-12">
 
                 <div class="site-info">
-                    <div class="aap-footer-box col-12 col-sm-6 col-lg-5">
-                        <?php echo '<img src="'. get_template_directory_uri() .'/presentations/aap/aap_tp1_grfx_logo_foot.png" >' ;?><br />
+                    <div class="dbs-footer-box col-12 col-sm-6 col-lg-5">
+                        <?php echo '<img src="'. get_template_directory_uri() .'/presentations/dbs/dbs_tp1_grfx_logo_foot.png" >' ;?><br />
                         <div style="padding-left:30px;">
                             Rhino7 Franchise Development Corporation, Inc.<br />
                             431 Keisler Dr.<br />
@@ -188,7 +181,7 @@
 
                         </div>
                     </div>
-                    <div class="aap-footer-box col-12 col-sm-6 col-lg-7" style="text-align:right;">
+                    <div class="dbs-footer-box col-12 col-sm-6 col-lg-7" style="text-align:right;">
                         <br /><br />
                         <a href="http://r7fdc.com" target="_blank" style="color:#FFF;">Rhino7 Website</a><span class="sep"> | </span>
                         <a href="http://blog.r7fdc.com" target="_blank" style="color:#FFF;">Rhino7 News</a><span class="sep"> | </span>
