@@ -48,13 +48,17 @@
         <div class="carousel slide" id="myCarousel"><!-- BEGIN Slideshow Carousel -->
             <div class="carousel-inner">
                 <div class="item active">
-                    <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/dbs/dbs_tp1_grfx_slide01.jpg">
+                    <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/dbs/dbs_tp1_grfx_slide04.jpg">
                 </div>
                 <div class="item">
                     <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/dbs/dbs_tp1_grfx_slide02.jpg">
                 </div>
                 <div class="item">
-                    <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/dbs/dbs_tp1_grfx_slide03.jpg">         </div>
+                    <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/dbs/dbs_tp1_grfx_slide03.jpg">
+                </div>
+                <div class="item">
+                    <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/dbs/dbs_tp1_grfx_slide01.jpg">
+                </div>
             </div>
             <a data-slide="prev" href="#myCarousel" class="left carousel-control">‹</a>
             <a data-slide="next" href="#myCarousel" class="right carousel-control">›</a>

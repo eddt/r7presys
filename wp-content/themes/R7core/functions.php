@@ -287,3 +287,9 @@ function wp_cpt_unique_post_slug($slug, $post_ID, $post_status, $post_type, $pos
     return $slug;
 }
 add_filter('wp_unique_post_slug', 'wp_cpt_unique_post_slug', 10, 6);
+
+add_filter('wp_get_attachment_link', 'rc_add_rel_attribute');
+function rc_add_rel_attribute($link) {
+    global $post;
+    return str_replace('<a href', '<a rel="prettyPhoto" href', $link);
+}

@@ -65,7 +65,7 @@ body.pod-page-dbs, body.pod-page-diesel-barber-shop {  }
     margin-top:60px;
 }
 .main-content-inner {
-    padding-bottom: 0;
+    padding-bottom: 2em;
 }
 
 .hentry {
@@ -166,7 +166,7 @@ body.pod-page-dbs, body.pod-page-diesel-barber-shop {  }
 /*CUSTOM PORTAL MENU CSS - Sidebar Menu */
 /* LEVEL ONE */
 #menu-open { float: left; }
-.sub-menu { list-style: none; }
+.sub-menu { list-style: none; padding-left:0; }
 .sidebar-vertical { display:block; position:relative; z-index:1000; }
 .navbar ul { list-style-type:none; padding-left:0; }
 ul.sidebar-nav { list-style-type:none; position:relative; padding-left:0; font-size:18px; }
@@ -174,7 +174,7 @@ ul.sidebar-nav li { border-top:1px solid #E1E1E1; min-width:200px; }
 ul.sidebar-nav li a { display: block; width:100%; color:#222; padding:10px 20px; }
 ul.sidebar-nav li.hover a { color:#FFF; background-color:#222; }
 ul.sidebar-nav li.current-menu-item a { color:#FFF; background-color:#971828; }
-ul.sidebar-nav li.current-menu-item ul.sub-menu li.menu-item a { color:#222; background-color:#FFF; }
+ul.sidebar-nav li.current-menu-item ul.sub-menu li.menu-item a { color:#222; background-color:#EEE; padding-left:20px; }
 /*container for side navigation*/
 .sidebar-navmenu { text-align:left; }
 .sidebar-navmenu-button { text-align:right; }
@@ -185,16 +185,16 @@ ul.sidebar-nav li.current-menu-item ul.sub-menu li.menu-item a { color:#222; bac
 li.current-menu-item > span { color:#fff !important; }
 li.current-menu-item a { color: #fff; }
 
-#menu-dbs li > span:before { content: '\25C0'; padding-right: 4px; }
-#menu-dbs li >span.active:before { content: '\25B6'; padding-right: 4px; }
-#menu-dbs li ul { display: none; }
+#menu-dbs li > span:before { content: '\25B6'; padding-right: 4px; }
+#menu-dbs li >span.active:before { content: '\25C0'; padding-right: 4px; }
+#menu-dbs li ul { display: none; background-color:#EEE; }
 #menu-all_a_p > li { /*padding-bottom: 3px; padding-left:15px;*/ }
 #menu-all_a_p li > span { color: #971828; cursor:pointer; float: left; padding: 10px 0px 10px 16px; }
-#menu-all_a_p li > span:before { content: '\25C0'; padding-right: 4px; }
-#menu-all_a_p li >span.active:before { content: '\25B6'; padding-right: 4px; }
-#menu-all_a_p li ul { display: none; }
+#menu-all_a_p li > span:before { content: '\25B6'; padding-right: 4px; }
+#menu-all_a_p li >span.active:before { content: '\25C0'; padding-right: 4px; }
+#menu-all_a_p li ul { display: none; background-color:#EEE; }
 
-.sub-menu { padding-left:25px; }
+.sub-menu { padding-left:20px; }
 
 #content {
     /*margin: 0px 50px;*/
