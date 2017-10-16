@@ -113,9 +113,11 @@
                                         var $li = $a.parent();
                                         if ($a.nextAll('ul')) {
                                             var $ul = $a.nextAll('ul');
+                                            var $link = $a.nextAll('a');
                                             $a.click(function(e) {
                                                 MenuTree.collapse($ul);
                                                 $a.toggleClass('active');
+                                                window.location.replace($link[0]);
                                             });
                                         }
                                         if ($li.hasClass('current-menu-item')) {
