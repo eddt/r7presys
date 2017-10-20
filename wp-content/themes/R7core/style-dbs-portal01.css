@@ -2,15 +2,15 @@
 
 /* Core Classes */
 .pods {  }
-.pod-dbs, .pod-all-a-p {  }
+.pod-dbs, .pod-diesel-barber-shop {  }
 
 /* For Wildcard Page Templates */
 .pod-page-dbs-w-w {}
 .pod-page-dbs-w {}
 .pod-page-dbs {}
-.pod-page-all-a-p-w-w {}
-.pod-page-all-a-p-w {}
-.pod-page-all-a-p {}
+.pod-page-diesel-barber-shop-w-w {}
+.pod-page-diesel-barber-shop-w {}
+.pod-page-diesel-barber-shop {}
 
 /* Overrides - Will replace existing CSS entities from core style.css file */
 
@@ -188,11 +188,11 @@ li.current-menu-item a { color: #fff; }
 #menu-dbs li > span:before { content: '\25B6'; padding-right: 4px; }
 #menu-dbs li >span.active:before { content: '\25C0'; padding-right: 4px; }
 #menu-dbs li ul { display: none; background-color:#EEE; }
-#menu-all_a_p > li { /*padding-bottom: 3px; padding-left:15px;*/ }
-#menu-all_a_p li > span { color: #971828; cursor:pointer; float: left; padding: 10px 0px 10px 16px; }
-#menu-all_a_p li > span:before { content: '\25B6'; padding-right: 4px; }
-#menu-all_a_p li >span.active:before { content: '\25C0'; padding-right: 4px; }
-#menu-all_a_p li ul { display: none; background-color:#EEE; }
+#menu-diesel_b_s > li { /*padding-bottom: 3px; padding-left:15px;*/ }
+#menu-diesel_b_s li > span { color: #971828; cursor:pointer; float: left; padding: 10px 0px 10px 16px; }
+#menu-diesel_b_s li > span:before { content: '\25B6'; padding-right: 4px; }
+#menu-diesel_b_s li >span.active:before { content: '\25C0'; padding-right: 4px; }
+#menu-diesel_b_s li ul { display: none; background-color:#EEE; }
 
 .sub-menu { padding-left:20px; }
 
