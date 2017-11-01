@@ -1,0 +1,370 @@
+/* Custom CSS Setup for Pods setup of Portal System for Rhino7*/
+
+/* Core Classes */
+.pods {  }
+.pod-fit, .pod-fitness-together {  }
+
+/* For Wildcard Page Templates */
+.pod-page-fit-w-w {}
+.pod-page-fit-w {}
+.pod-page-fit {}
+.pod-page-fitness-together-w-w {}
+.pod-page-fitness-together-w {}
+.pod-page-fitness-together {}
+
+/* Overrides - Will replace existing CSS entities from core style.css file */
+
+body {
+    font-size: 16px;
+    font-family: 'Open Sans', sans-serif;
+    background-color: #fff;
+    color:#222;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 { font-family: 'Oswald', sans-serif; }
+
+a, a:hover { color:#0481c3; }
+
+body.pod-page-fit, body.pod-page-fitness-together {  }
+
+.dark { color:#222; }
+
+.sidebar { text-align:center; font-family: 'Oswald', sans-serif; }
+
+.container {
+    padding: 0px 15px;
+    max-width:960px;
+}
+.page-header { border-bottom:1px solid #fff; margin:0; }
+.page-title {
+    padding: 10px;
+    text-align: left;
+    font-size: 55px !important; /* 1.5em */
+    font-weight: bold;
+    color: #0481c3;
+    margin:0;
+}
+
+.site-header {
+    /*margin-top:46px;*/
+}
+
+.site-branding {
+    display:inline-block;
+    margin-top: 30px;
+    text-align:center;
+}
+
+.site-navigation-inner {
+    /*display: none;*/
+}
+.site-header-inner {
+    height: 148px;
+}
+.main-content {
+    margin-top:60px;
+}
+.main-content-inner {
+    padding-bottom: 2em;
+}
+
+.hentry {
+    margin: 0;
+}
+.circular {
+    border-radius: 100%;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+}
+.post-image {
+    /*position: absolute;
+    top: 0;
+    right: 0;*/
+
+}
+.post-header {
+    /*position: absolute;
+    top: 1px;*/
+}
+
+.type-aap {
+    /*background-color: #E2E2E2;*/
+}
+
+.entry-content, .entry-meta {
+    padding:10px;
+}
+
+.format-aside .entry-content, .format-aside .entry-meta {
+    background-color: #FFF;
+    padding: 10px;
+}
+
+.entry-pane ul, .entry-content ul  {
+    list-style-type: none;
+    position: relative;
+    margin-left: 1em;
+    padding-left: 0;
+}
+.entry-pane ul > li:before, .entry-content ul > li:before {
+    content: '\25CF';
+    color: #0481c3;
+    position: absolute;
+    left: -0.8em;
+    margin-right: 5px;
+    line-height:1.2em;
+}
+
+/* Other - new CSS entities specific to template, not found in core style.css file */
+
+.sub-title, .entry-content h2, .entry-pane h2  { color:#0481c3; font-weight:bold; }
+
+.header-image {
+
+}
+
+.fit-slides { margin-top:20px; }
+.fit-content {
+
+}
+
+.fit-footer {
+    background-color:#7C766F;
+    min-height: 190px;
+}
+
+.fit-footer-box {
+    font-size:14px;
+    color:#FFF;
+    line-height:1.1;
+    margin-top:15px;
+    display:inline-block;
+    height: 120px;
+    vertical-align:top;
+}
+
+/*container for header navigation*/
+.head-menu {
+    position: absolute;
+    z-index: 1000;
+    right: 30px;
+    top: 50px;
+}
+
+/*container for side navigation*/
+.side-menu {
+    position: relative;
+    z-index: 1000;
+
+}
+#pre-content-spacer { margin-top:160px; }
+
+#menu-fit {
+    /*border: 1px solid #6D2B80;*/
+}
+
+/*CUSTOM PORTAL MENU CSS - Sidebar Menu */
+/* LEVEL ONE */
+#menu-open { float: left; }
+.sub-menu { list-style: none; padding-left:0; }
+.sidebar-vertical { display:block; position:relative; z-index:1000; }
+.navbar ul { list-style-type:none; padding-left:0; }
+ul.sidebar-nav { list-style-type:none; position:relative; padding-left:0; font-size:18px; }
+ul.sidebar-nav li { border-top:1px solid #E1E1E1; min-width:200px; }
+ul.sidebar-nav li a { display: block; width:100%; color:#222; padding:10px 20px; }
+ul.sidebar-nav li.hover a { color:#FFF; background-color:#222; }
+ul.sidebar-nav li.current-menu-item a { color:#FFF; background-color:#0481c3; }
+ul.sidebar-nav li.current-menu-item ul.sub-menu li.menu-item a { color:#222; background-color:#EEE; padding-left:20px; }
+/*container for side navigation*/
+.sidebar-navmenu { text-align:left; }
+.sidebar-navmenu-button { text-align:right; }
+#menu-fit { /*margin: 2em 0 0 2em; width: 20em;*/ }
+#menu-fit > li { /*padding-bottom: 3px; padding-left:15px;*/ }
+#menu-fit li > span { color: #0481c3; cursor:pointer; float: left; padding: 10px 0px 10px 16px; }
+
+li.current-menu-item > span { color:#fff !important; }
+li.current-menu-item a { color: #fff; }
+
+#menu-fit li > span:before { content: '\25B6'; padding-right: 4px; }
+#menu-fit li >span.active:before { content: '\25C0'; padding-right: 4px; }
+#menu-fit li ul { display: none; background-color:#EEE; }
+#menu-fitness > li { /*padding-bottom: 3px; padding-left:15px;*/ }
+#menu-fitness li > span { color: #0481c3; cursor:pointer; float: left; padding: 10px 0px 10px 16px; }
+#menu-fitness li > span:before { content: '\25B6'; padding-right: 4px; }
+#menu-fitness li >span.active:before { content: '\25C0'; padding-right: 4px; }
+#menu-fitness li ul { display: none; background-color:#EEE; }
+
+.sub-menu { padding-left:20px; }
+
+#content {
+    /*margin: 0px 50px;*/
+}
+
+.entry-pane {
+
+    padding: 10px;
+    display: inline-block;
+}
+
+.portal-nav {
+    display: inline-block;
+    text-align: right;
+    margin: 30px 0px 0px 0px;
+}
+
+.portal-ban {
+    display: inline-block;
+    height: auto;
+    max-width: 100%;
+}
+
+#topbar {
+    background-color: #919191;
+    min-height: 38px;
+    padding: 0px 20px;
+    position:relative;
+    z-index:100;
+}
+
+/*Media Query Overrides*/
+@media (min-width: 768px) {
+    /*.portal-nav { display:none; }*/
+    .sidebar-navmenu-button { visibility: hidden; }
+    }
+
+@media (min-width: 992px) {
+
+}
+
+@media (min-width: 1200px) {
+
+}
+@media (max-width: 767px) {
+    body.pod-page-fit, body.pod-page-fitness-together { background: #fff; }
+    .page-header h1 {font-size: 1.2em;}
+    .header-image { display:none; }
+    .header-image-frame { display:none; }
+    .sidebar-vertical { display:none; }
+    .sidebar-navmenu-button { visibility: visible; }
+    #pre-content-spacer { display:none; }
+}
+@media (max-width: 990px) {
+    .side-menu { width: 50%; }
+    ul.ddside ul {width: 80%; left: 70%; -moz-box-sizing: inherit; padding: 2px 4px; }
+    /*.sidebar { text-align:center; }*/
+}
+@media (max-width: 1200px) {
+    .post-header { padding-top: 50px; }
+}
+
+/*Bootstrap Overrides*/
+#myCarousel {
+
+}
+
+.carousel {
+    line-height: 1;
+    /*margin-bottom: 20px;*/
+    position: relative;
+}
+.carousel-inner {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+.carousel-inner > .item {
+    display: none;
+    position: relative;
+    transition: left 0.6s ease-in-out 0s;
+}
+.carousel-inner > .item > img, .carousel-inner > .item > a > img {
+    display: block;
+    line-height: 1;
+}
+.carousel-inner > .active, .carousel-inner > .next, .carousel-inner > .prev {
+    display: block;
+}
+.carousel-inner > .active {
+    left: 0;
+}
+.carousel-inner > .next, .carousel-inner > .prev {
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+.carousel-inner > .next {
+    left: 100%;
+}
+.carousel-inner > .prev {
+    left: -100%;
+}
+.carousel-inner > .next.left, .carousel-inner > .prev.right {
+    left: 0;
+}
+.carousel-inner > .active.left {
+    left: -100%;
+}
+.carousel-inner > .active.right {
+    left: 100%;
+}
+.carousel-control {
+    background: none repeat scroll 0 0 #222222;
+    border: 3px solid #FFFFFF;
+    border-radius: 23px 23px 23px 23px;
+    color: #FFFFFF;
+    font-size: 40px;
+    font-weight: 100;
+    height: 40px;
+    left: 15px;
+    line-height: 26px;
+    margin-top: -20px;
+    opacity: 0.5;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    width: 40px;
+}
+.carousel-control.right {
+    background-color:#000;
+    left: auto;
+    right: 15px;
+}
+.carousel-control.left {
+    background-color:#000;
+}
+.carousel-control:hover, .carousel-control:focus {
+    color: #FFFFFF;
+    opacity: 0.9;
+    text-decoration: none;
+}
+.open > .dropdown-menu {
+    display: block;
+}
+
+.deep-top {
+    background-clip: padding-box;
+    background-color: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.176);
+    display: none;
+    float: left;
+    left: 50%;/*40%;*/
+    list-style: none outside none;
+    margin: 2px 0 0;
+    min-width: 160px;
+    padding: 1px 0;
+    position: absolute;
+    top: 10px; /*70%;*/
+    z-index: 1000;
+}
+
+/* Additional Features */
+.size-auto,
+.size-full,
+.size-large,
+.size-medium,
+.size-thumbnail {
+    max-width: 100%;
+    height: auto;
+}
