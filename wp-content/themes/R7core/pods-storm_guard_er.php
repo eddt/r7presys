@@ -54,9 +54,6 @@
                         <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/sgr/sgr_tp1_grfx_slide01.jpg">
                     </div>
                     <div class="item">
-                        <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/sgr/sgr_tp1_grfx_slide02.jpg">
-                    </div>
-                    <div class="item">
                         <img alt="" src="<?php echo get_template_directory_uri();?>/presentations/sgr/sgr_tp1_grfx_slide03.jpg">
                     </div>
                     <div class="item">
