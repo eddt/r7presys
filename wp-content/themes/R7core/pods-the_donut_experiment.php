@@ -36,6 +36,9 @@
         </div>
     </div>
 </header><!-- #masthead -->
+
+<div class="site-wrap">
+
 <?php if ( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'diesel-barber-shop') : ?>
     <div class="tde-header"></div>
 
@@ -169,6 +172,8 @@
         </div><!-- close .row -->
     </div><!-- close .container -->
 </div><!-- close .main-content -->
+
+</div><!-- close .site-wrap -->
 
 <footer id="colophon" class="site-footer" role="contentinfo">
     <div class="tde-footer">

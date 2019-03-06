@@ -33,7 +33,7 @@ body {
     font-size: 16px;
     font-family: 'Montserrat', sans-serif;
     background-color: #e5d7c1;
-    color:#222;
+    color:rgb(51, 51, 51);
 
 }
 
@@ -185,32 +185,36 @@ body.pod-page-tde, body.pod-page-the-donut-experiment {  }
 .sub-menu { list-style: none; padding-left:0; }
 .sidebar-vertical { display:block; position:relative; z-index:1000; }
 .navbar ul { list-style-type:none; padding-left:0; }
-ul.sidebar-nav { list-style-type:none; position:relative; padding-left:0; font-size:18px; }
+ul.sidebar-nav { list-style-type:none; position:relative; padding-left:0; font-size:19px; line-height:1.079;}
 ul.sidebar-nav li { border-top:1px solid #E1E1E1; min-width:200px; }
-ul.sidebar-nav li a { display: block; width:100%; color:#222; padding:10px 20px; }
+ul.sidebar-nav li a { display: block; width:100%; color:#222; padding:10px 10px 10px 40px; }
 ul.sidebar-nav li.hover a { color:#FFF; background-color:#222; }
-ul.sidebar-nav li.current-menu-item a { color:#FFF; background-color:rgb(168, 216, 187); }
-ul.sidebar-nav li.current-menu-item ul.sub-menu li.menu-item a { color:#222; background-color:#EEE; padding-left:20px; }
+ul.sidebar-nav li.current-menu-item a { color:rgb(51, 51, 51); background-color:rgb(168, 216, 187); }
+
+ul.sidebar-nav li.current-menu-item a { color:rgb(51, 51, 51); background-color:#A8D8BB; }
+ul.sidebar-nav li.current-menu-item ul.sub-menu li.menu-item a { background-color:#e1eee2; }
+
+ul.sidebar-nav li.current-menu-parent { background-color:#e1eee2; }
 /*container for side navigation*/
 .sidebar-navmenu { text-align:left; }
 .sidebar-navmenu-button { text-align:right; }
 #menu-tde { /*margin: 2em 0 0 2em; width: 20em;*/ }
 #menu-tde > li { /*padding-bottom: 3px; padding-left:15px;*/ }
-#menu-tde li > span { color: rgb(168, 216, 187); cursor:pointer; float: left; padding: 10px 0px 10px 16px; }
+#menu-tde li > span { color: #A8D8BB; cursor:pointer; float: left; padding: 10px 0px 10px 16px; }
 
 li.current-menu-item > span { color:#fff !important; }
-li.current-menu-item a { color: #fff; }
+li.current-menu-item a { color: rgb(51, 51, 51); }
 
 #menu-tde li > span:before { content: '\25B6'; padding-right: 4px; }
 #menu-tde li >span.active:before { content: '\25C0'; padding-right: 4px; }
-#menu-tde li ul { display: none; background-color:rgba(168, 216, 187, 0.3); }
+#menu-tde li ul { display: none; background-color:#e1eee2; }
 #menu-donut_ex > li { /*padding-bottom: 3px; padding-left:15px;*/ }
-#menu-donut_ex li > span { color: rgb(168, 216, 187); cursor:pointer; float: left; padding: 10px 0px 10px 16px; }
+#menu-donut_ex li > span { color: #A8D8BB; cursor:pointer; float: left; padding: 10px 0px 10px 16px; }
 #menu-donut_ex li > span:before { content: '\25B6'; padding-right: 4px; }
 #menu-donut_ex li >span.active:before { content: '\25C0'; padding-right: 4px; }
 #menu-donut_ex li ul { display: none; background-color:#EEE; }
 
-.sub-menu { padding-left:20px; }
+.sub-menu { /*padding-left:20px;*/ }
 
 #content {
     /*margin: 0px 50px;*/
