@@ -39,12 +39,12 @@
 
 <div class="site-wrap">
 
-<?php if ( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'diesel-barber-shop') : ?>
+<?php if ( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'the-donut-experiment') : ?>
     <div class="tde-header"></div>
 
 <?php endif; ?>
 
-<?php if( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'diesel-barber-shop') : ?>
+<?php if( substr(strrchr(home_url($wp->request),"/"),1,strlen( strrchr( home_url($wp->request),"/" ) ) ) == 'the-donut-experiment') : ?>
     <nav class="site-navigation"></nav><!-- .site-navigation -->
     <div class="container tde-slides">
         <div class="carousel slide" id="myCarousel"><!-- BEGIN Slideshow Carousel -->

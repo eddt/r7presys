@@ -10,7 +10,7 @@
 @font-face {font-family: "ChineseRocksRg-Regular";
   src: url("presentations/tde/c0fa5a8a3fbd7414c2f609938527895f.eot"); /* IE9*/
   src: url("presentations/tde/c0fa5a8a3fbd7414c2f609938527895f.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
-  url("cpresentations/tde/0fa5a8a3fbd7414c2f609938527895f.woff2") format("woff2"), /* chrome、firefox */
+  url("presentations/tde/c0fa5a8a3fbd7414c2f609938527895f.woff2") format("woff2"), /* chrome、firefox */
   url("presentations/tde/c0fa5a8a3fbd7414c2f609938527895f.woff") format("woff"), /* chrome、firefox */
   url("presentations/tde/c0fa5a8a3fbd7414c2f609938527895f.ttf") format("truetype"), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
   url("presentations/tde/c0fa5a8a3fbd7414c2f609938527895f.svg#ChineseRocksRg-Regular") format("svg"); /* iOS 4.1- */
@@ -39,7 +39,7 @@ body {
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 { font-family: 'GROBOLD', sans-serif; }
 
-a, a:hover { color:#971828; }
+a, a:hover { color:rgb(241, 95, 95); }
 
 body.pod-page-tde, body.pod-page-the-donut-experiment {  }
 
@@ -83,7 +83,7 @@ body.pod-page-tde, body.pod-page-the-donut-experiment {  }
 .main-content-inner {
     padding-bottom: 2em;
 }
-
+.main-content-inner p { font-weight:bold; }
 .hentry {
     margin: 0;
 }
@@ -124,7 +124,7 @@ body.pod-page-tde, body.pod-page-the-donut-experiment {  }
 }
 .entry-pane ul > li:before, .entry-content ul > li:before {
     content: '\25CF';
-    color: #971828;
+    color: rgb(241, 95, 95);
     position: absolute;
     left: -0.8em;
     margin-right: 5px;
