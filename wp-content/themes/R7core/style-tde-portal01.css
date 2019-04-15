@@ -56,9 +56,10 @@ body.pod-page-tde, body.pod-page-the-donut-experiment {  }
     padding: 10px;
     text-align: left;
     font-size: 40px !important; /* 1.5em */
-    line-height:1.3;
     color: rgb(241, 95, 95);
     margin:40px 0px 0px 0px;
+    display:inline;
+    line-height:2em;
 }
 
 .site-header {
@@ -96,11 +97,14 @@ body.pod-page-tde, body.pod-page-the-donut-experiment {  }
     /*position: absolute;
     top: 0;
     right: 0;*/
+    display:inline-block;
+    margin-bottom:10px;
 
 }
 .post-header {
     /*position: absolute;
     top: 1px;*/
+    margin-top:10px;
 }
 
 .type-tde {
@@ -191,7 +195,7 @@ body.pod-page-tde, body.pod-page-the-donut-experiment {  }
 .navbar ul { list-style-type:none; padding-left:0; }
 ul.sidebar-nav { list-style-type:none; position:relative; padding-left:0; font-size:19px; line-height:1.079;}
 ul.sidebar-nav li { border-top:1px solid #E1E1E1; min-width:200px; }
-ul.sidebar-nav li a { display: block; width:100%; color:#222; padding:10px 10px 10px 40px; }
+ul.sidebar-nav li a { display: block; width:100%; color:#222; padding:10px 20px; }
 ul.sidebar-nav li.hover a { color:#FFF; background-color:#222; }
 ul.sidebar-nav li.current-menu-item a { color:rgb(51, 51, 51); background-color:rgb(168, 216, 187); }
 
@@ -218,7 +222,7 @@ li.current-menu-item a { color: rgb(51, 51, 51); }
 #menu-donut_ex li >span.active:before { content: '\25C0'; padding-right: 4px; }
 #menu-donut_ex li ul { display: none; background-color:#EEE; }
 
-.sub-menu { /*padding-left:20px;*/ }
+.sub-menu { padding-left:20px; }
 
 #content {
     /*margin: 0px 50px;*/
