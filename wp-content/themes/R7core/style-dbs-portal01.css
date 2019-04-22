@@ -23,7 +23,7 @@ body {
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 { font-family: 'Oswald', sans-serif; }
 
-a, a:hover { color:#971828; }
+a, a:hover { /*color:#971828;*/ color:#0088CE; }
 
 body.pod-page-dbs, body.pod-page-diesel-barber-shop {  }
 
@@ -41,7 +41,7 @@ body.pod-page-dbs, body.pod-page-diesel-barber-shop {  }
     text-align: left;
     font-size: 55px !important; /* 1.5em */
     font-weight: bold;
-    color: #971828;
+    /*color: #971828;*/ color:#0088CE;
     margin:0;
 }
 
@@ -108,7 +108,7 @@ body.pod-page-dbs, body.pod-page-diesel-barber-shop {  }
 }
 .entry-pane ul > li:before, .entry-content ul > li:before {
     content: '\25CF';
-    color: #971828;
+    /* color: #971828; */ color:#0088CE;
     position: absolute;
     left: -0.8em;
     margin-right: 5px;
@@ -117,7 +117,7 @@ body.pod-page-dbs, body.pod-page-diesel-barber-shop {  }
 
 /* Other - new CSS entities specific to template, not found in core style.css file */
 
-.sub-title, .entry-content h2, .entry-pane h2  { color:#971828; font-weight:bold; }
+.sub-title, .entry-content h2, .entry-pane h2  { /* color:#971828; */ color:#0088CE; font-weight:bold; }
 
 .header-image {
 
@@ -173,14 +173,14 @@ ul.sidebar-nav { list-style-type:none; position:relative; padding-left:0; font-s
 ul.sidebar-nav li { border-top:1px solid #E1E1E1; min-width:200px; }
 ul.sidebar-nav li a { display: block; width:100%; color:#222; padding:10px 20px; }
 ul.sidebar-nav li.hover a { color:#FFF; background-color:#222; }
-ul.sidebar-nav li.current-menu-item a { color:#FFF; background-color:#971828; }
+ul.sidebar-nav li.current-menu-item a { color:#FFF; /* background-color:#971828; */ background-color:#0088CE; }
 ul.sidebar-nav li.current-menu-item ul.sub-menu li.menu-item a { color:#222; background-color:#EEE; padding-left:20px; }
 /*container for side navigation*/
 .sidebar-navmenu { text-align:left; }
 .sidebar-navmenu-button { text-align:right; }
 #menu-dbs { /*margin: 2em 0 0 2em; width: 20em;*/ }
 #menu-dbs > li { /*padding-bottom: 3px; padding-left:15px;*/ }
-#menu-dbs li > span { color: #971828; cursor:pointer; float: left; padding: 10px 0px 10px 16px; }
+#menu-dbs li > span { /* color: #971828; */ color:#0088CE; cursor:pointer; float: left; padding: 10px 0px 10px 16px; }
 
 li.current-menu-item > span { color:#fff !important; }
 li.current-menu-item a { color: #fff; }
@@ -189,7 +189,7 @@ li.current-menu-item a { color: #fff; }
 #menu-dbs li >span.active:before { content: '\25C0'; padding-right: 4px; }
 #menu-dbs li ul { display: none; background-color:#EEE; }
 #menu-diesel_b_s > li { /*padding-bottom: 3px; padding-left:15px;*/ }
-#menu-diesel_b_s li > span { color: #971828; cursor:pointer; float: left; padding: 10px 0px 10px 16px; }
+#menu-diesel_b_s li > span { /* color: #971828; */ color:#0088CE; cursor:pointer; float: left; padding: 10px 0px 10px 16px; }
 #menu-diesel_b_s li > span:before { content: '\25B6'; padding-right: 4px; }
 #menu-diesel_b_s li >span.active:before { content: '\25C0'; padding-right: 4px; }
 #menu-diesel_b_s li ul { display: none; background-color:#EEE; }

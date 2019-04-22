@@ -53,7 +53,7 @@ body.pod-page-tde, body.pod-page-the-donut-experiment {  }
 }
 .page-header { border-bottom:1px solid #fff; margin:0; }
 .page-title {
-    padding: 10px;
+    padding: 10px 0px;
     text-align: left;
     font-size: 40px !important; /* 1.5em */
     color: rgb(241, 95, 95);
@@ -139,7 +139,7 @@ body.pod-page-tde, body.pod-page-the-donut-experiment {  }
 
 /* Other - new CSS entities specific to template, not found in core style.css file */
 
-.sub-title, .entry-content h2, .entry-pane h2  { color:rgb(241, 95, 95); font-weight:bold; }
+.sub-title, .entry-content h2, .entry-pane h2  { color:rgb(241, 95, 95); font-weight:bold; display:inline; line-height:normal; }
 
 .entry-content h3, .entry-pane h3  { color:inherit; font-family:Montserrat; font-size:24px; font-weight:bold; }
 
