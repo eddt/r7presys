@@ -16,6 +16,7 @@
 				'after'  => '</div>',
 			) );
 		?>
+		<h6 style="font-family: 'Montserrat', sans-serif;"><em>TDE Franchise, LLC does not make or endorse, nor does it allow any representative or other individual to make or endorse, any oral, written, visual, or other claim or representation that states or suggests any level or range of actual or potential sales, costs, income, expenses, profits, cash flow, or otherwise with respect to a The Donut Experiment franchise other than those contained in Item 19 of the Franchise Disclosure Document.</em></h6>
 	</div><!-- .entry-content -->
 	<footer class="entry-meta">
 		<?php edit_post_link( __( 'Edit', 'R7core' ), '<span class="edit-link">', '</span>' ); ?>
